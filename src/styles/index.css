@@ -1,9 +1,11 @@
-html,
+html {
+  height: 100%;
+  display: block;
+}
 body {
   margin: 0;
   padding: 0;
   background-color: #282c34;
-  height: 100%;
 }
 
 .root {

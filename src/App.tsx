@@ -1,4 +1,5 @@
 import React from "react";
+import { Board } from "./components/Board";
 import { CodeInput } from "./components/CodeInput";
 import "./styles/App.css";
 
@@ -7,6 +8,7 @@ function App() {
     <div className="App">
       <div className="App-Container">
         <CodeInput />
+        <Board />
       </div>
     </div>
   );
