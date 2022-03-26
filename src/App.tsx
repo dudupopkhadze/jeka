@@ -1,16 +1,19 @@
 import React from "react";
 import { Board } from "./components/Board";
 import { CodeInput } from "./components/CodeInput";
+import { CodeControllerContextProvider } from "./controllers";
 import "./styles/App.css";
 
 function App() {
   return (
-    <div className="App">
-      <div className="App-Container">
-        <CodeInput />
-        <Board />
+    <CodeControllerContextProvider>
+      <div className="App">
+        <div className="App-Container">
+          <CodeInput />
+          <Board />
+        </div>
       </div>
-    </div>
+    </CodeControllerContextProvider>
   );
 }
 

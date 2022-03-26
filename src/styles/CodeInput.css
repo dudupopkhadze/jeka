@@ -1,7 +1,71 @@
 .CodeInput-Container {
   background-color: #272822;
+  padding: 5px;
   width: 500px;
   height: 500px;
   margin: auto;
   border-radius: 10px;
+  overflow: scroll;
+  position: relative;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.CodeInput-Container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.CodeInput-Container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.CodeInput-Row-Input {
+  position: absolute;
+  top: 4px;
+  left: 25px;
+  width: calc(100% - 10px);
+  outline: none;
+  height: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.CodeInput-Row-Span {
+  width: calc(100% - 10px);
+  outline: none;
+  height: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.CodeInput-Row-Container {
+  display: flex;
+}
+
+.CodeInput-Row-Container--Active {
+  display: flex;
+  background-color: #524e4e63;
+  border-radius: 4px;
+}
+
+.CodeInput-Row-Number {
+  color: white;
+  height: 20px;
+  width: 20px;
+  padding-right: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-family: inherit;
+  font-weight: 500;
 }
