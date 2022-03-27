@@ -1,16 +1,15 @@
 import React, { useCallback, useRef, useState } from "react";
 import "../../styles/CodeInput.css";
 import { useCodeControllerContext } from "../../controllers";
-import { useRenderer } from "../../hooks/useRenderer";
 import CodeRow from "./CodeRow";
 
 export const CodeInput = () => {
   const { codeController } = useCodeControllerContext();
+  const ref = useRef<HTMLInputElement>(null);
   const [{ activeRow, value }, setState] = useState({
     activeRow: 0,
     value: codeController.getData(0),
   });
-  const render = useRenderer();
 
   const moveCurrentRow = useCallback(
     (direction: "up" | "down" | "back") => {
@@ -29,6 +28,7 @@ export const CodeInput = () => {
         activeRow: nextValue,
         value: codeController.getData(nextValue),
       });
+      ref.current?.focus();
     },
     [activeRow, codeController]
   );
@@ -46,9 +46,13 @@ export const CodeInput = () => {
           break;
 
         case "Left": // IE/Edge specific value
-        case "ArrowLeft":
-          // Do something for "left arrow" key press.
+        case "ArrowLeft": {
+          if (ref.current?.selectionStart === 0) {
+            moveCurrentRow("up");
+          }
+
           break;
+        }
         case "Right": // IE/Edge specific value
         case "ArrowRight":
           // Do something for "right arrow" key press.
@@ -71,6 +75,17 @@ export const CodeInput = () => {
     [moveCurrentRow]
   );
 
+  const switchToRow = useCallback(
+    (rowNumber: number) => {
+      setState({
+        activeRow: rowNumber,
+        value: codeController.getData(rowNumber),
+      });
+      ref.current?.focus();
+    },
+    [codeController]
+  );
+
   const handleValueChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setState((c) => ({
@@ -84,9 +99,17 @@ export const CodeInput = () => {
   return (
     <div className="CodeInput-Container">
       {new Array(codeController.length()).fill(0).map((_, i) => {
-        return <CodeRow key={i} rowNumber={i} isActive={activeRow === i} />;
+        return (
+          <CodeRow
+            key={i}
+            onPress={switchToRow}
+            rowNumber={i}
+            isActive={activeRow === i}
+          />
+        );
       })}
       <input
+        ref={ref}
         className="CodeInput-Row-Input"
         style={{
           top: `${4 + 20 * activeRow}px`,

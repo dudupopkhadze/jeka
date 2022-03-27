@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 
 const INITIAL_SIZE = 15;
 
@@ -9,6 +9,9 @@ class CodeController {
 
     this.data[2] = "cool dude";
     this.data[0] = "hello ";
+
+    this.data[6] = "function test";
+    this.data[8] = "const a = 5;";
   }
 
   updateData(value: string, index: number) {

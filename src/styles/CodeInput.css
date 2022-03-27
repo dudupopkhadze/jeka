@@ -24,7 +24,7 @@
   position: absolute;
   top: 4px;
   left: 25px;
-  width: calc(100% - 10px);
+  width: calc(100% - 35px);
   outline: none;
   height: 20px;
   background: none;
@@ -68,4 +68,20 @@
   font-size: 18px;
   font-family: inherit;
   font-weight: 500;
+}
+
+.CodeInput-Row-Span-Code {
+  color: white;
+}
+
+.CodeInput-Row-Span-Code-fn {
+  color: red;
+}
+
+.CodeInput-Row-Span-Code-vr {
+  color: brown;
+}
+
+.CodeInput-Row-Span-Code-op {
+  color: green;
 }
