@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "../../styles/CodeInput.css";
 import { useCodeControllerContext } from "../../controllers";
 import CodeRow from "./CodeRow";
+import { measureText } from "../../utils";
 
 export const CodeInput = () => {
   const { codeController } = useCodeControllerContext();
@@ -10,6 +11,12 @@ export const CodeInput = () => {
     activeRow: 0,
     value: codeController.getData(0),
   });
+
+  const [textSize, setTextSize] = useState(() => measureText(value).width);
+
+  useEffect(() => {
+    setTextSize(measureText(value).width);
+  }, [value]);
 
   const moveCurrentRow = useCallback(
     (direction: "up" | "down" | "back") => {
@@ -88,12 +95,17 @@ export const CodeInput = () => {
 
   const handleValueChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setState((c) => ({
-        ...c,
-        value: codeController.updateData(e.target.value, c.activeRow),
-      }));
+      const value = e.target.value;
+      const v = codeController.contact(value, activeRow);
+      setState((c) => {
+        return {
+          ...c,
+          value: v,
+        };
+      });
+      ref.current!.value = "";
     },
-    [codeController]
+    [activeRow, codeController]
   );
 
   return (
@@ -113,8 +125,9 @@ export const CodeInput = () => {
         className="CodeInput-Row-Input"
         style={{
           top: `${4 + 20 * activeRow}px`,
+          left: `${25 + textSize}px`,
         }}
-        value={value}
+        value={""}
         onChange={handleValueChange}
         onKeyDown={handleKeyPress}
       />

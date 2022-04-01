@@ -24,7 +24,7 @@
   position: absolute;
   top: 4px;
   left: 25px;
-  width: calc(100% - 35px);
+  /* width: calc(100% - 35px); */
   outline: none;
   height: 20px;
   background: none;
