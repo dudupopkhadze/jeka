@@ -1,7 +1,7 @@
 const INITIAL_SIZE = 15;
 
 export class CodeController {
-  data: string[];
+  private data: string[];
 
   constructor() {
     this.data = new Array(INITIAL_SIZE).fill("");

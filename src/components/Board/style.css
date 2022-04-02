@@ -1,0 +1,13 @@
+.Board-Container {
+  background-color: white;
+  /* background-color: #3f3f3f; */
+  width: 600px;
+  height: 600px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.Board-Container-Canvas {
+  width: 600px;
+  height: 600px;
+}
