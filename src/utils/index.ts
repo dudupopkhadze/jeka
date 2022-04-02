@@ -8,7 +8,7 @@ export const measureText = (text: string, fontSize: number = 18) => {
   (lDiv as any).style.left = -1000;
   (lDiv as any).style.top = -1000;
 
-  lDiv.textContent = text;
+  lDiv.textContent = text.replaceAll(" ", "i");
 
   var lResult = {
     width: lDiv.clientWidth,

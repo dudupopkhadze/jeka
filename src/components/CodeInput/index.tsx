@@ -18,70 +18,78 @@ export const CodeInput = () => {
     setTextSize(measureText(value).width);
   }, [value]);
 
-  const moveCurrentRow = useCallback(
-    (direction: "up" | "down" | "back") => {
-      if (direction === "back" && codeController.getData(activeRow).length) {
-        return;
-      }
-
-      const nextValue = direction === "down" ? activeRow + 1 : activeRow - 1;
-
-      if (nextValue < 0) return;
-      if (nextValue >= codeController.length()) {
-        codeController.grow();
-      }
-
+  const moveCurrentRow = (direction: "up" | "down" | "back") => {
+    if (direction === "back") {
+      const curValue = codeController.getData(activeRow);
+      if (!curValue) return;
       setState({
-        activeRow: nextValue,
-        value: codeController.getData(nextValue),
+        activeRow: activeRow,
+        value: codeController.updateData(
+          curValue.substring(0, curValue.length - 1),
+          activeRow
+        ),
       });
-      ref.current?.focus();
-    },
-    [activeRow, codeController]
-  );
+      return;
+    }
 
-  const handleKeyPress = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      switch (e.key) {
-        case "Down": // IE/Edge specific value
-        case "ArrowDown":
-          moveCurrentRow("down");
-          break;
-        case "Up": // IE/Edge specific value
-        case "ArrowUp":
+    const nextValue = direction === "down" ? activeRow + 1 : activeRow - 1;
+
+    if (nextValue < 0) return;
+    if (nextValue >= codeController.length()) {
+      codeController.grow();
+    }
+
+    setState({
+      activeRow: nextValue,
+      value: codeController.getData(nextValue),
+    });
+    ref.current?.focus();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (e.key) {
+      case "Down": // IE/Edge specific value
+      case "ArrowDown":
+        moveCurrentRow("down");
+        break;
+      case "Up": // IE/Edge specific value
+      case "ArrowUp":
+        moveCurrentRow("up");
+        break;
+
+      case "Left": // IE/Edge specific value
+      case "ArrowLeft": {
+        if (ref.current?.selectionStart === 0) {
           moveCurrentRow("up");
-          break;
-
-        case "Left": // IE/Edge specific value
-        case "ArrowLeft": {
-          if (ref.current?.selectionStart === 0) {
-            moveCurrentRow("up");
-          }
-
-          break;
-        }
-        case "Right": // IE/Edge specific value
-        case "ArrowRight":
-          // Do something for "right arrow" key press.
-          break;
-        case "Enter":
-          moveCurrentRow("down");
-          break;
-        case "Backspace": {
-          moveCurrentRow("back");
-          break;
         }
 
-        case "Esc": // IE/Edge specific value
-        case "Escape":
-          break;
-        default:
-          return; // Quit when this doesn't handle the key event.
+        break;
       }
-    },
-    [moveCurrentRow]
-  );
+      case "Right": // IE/Edge specific value
+      case "ArrowRight":
+        // Do something for "right arrow" key press.
+        break;
+      case "Enter":
+        moveCurrentRow("down");
+        break;
+      case "Backspace": {
+        moveCurrentRow("back");
+        break;
+      }
+      case "Space":
+        setState({
+          activeRow: activeRow,
+          value: codeController.contact(" ", activeRow),
+        });
+        break;
 
+      case "Esc": // IE/Edge specific value
+      case "Escape":
+        break;
+      default:
+        return; // Quit when this doesn't handle the key event.
+    }
+  };
   const switchToRow = useCallback(
     (rowNumber: number) => {
       setState({

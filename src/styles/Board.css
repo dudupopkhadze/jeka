@@ -1,6 +1,7 @@
 .Board-Container {
   background-color: #3f3f3f;
-  width: 500px;
+  min-width: 500px;
+  width: 40%;
   height: 500px;
   margin: auto;
   border-radius: 10px;

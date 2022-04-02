@@ -1,7 +1,8 @@
 .CodeInput-Container {
   background-color: #272822;
   padding: 5px;
-  width: 500px;
+  min-width: 500px;
+  width: 40%;
   height: 500px;
   margin: auto;
   border-radius: 10px;
@@ -45,6 +46,7 @@
   font-size: 18px;
   font-family: inherit;
   font-weight: 500;
+  white-space: pre;
 }
 
 .CodeInput-Row-Container {

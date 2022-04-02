@@ -50,7 +50,7 @@ const CodeRow: React.FC<CodeRowProps> = ({ rowNumber, isActive, onPress }) => {
       <div className="CodeInput-Row-Span">
         {chunks.map(({ value, classname }, i) => (
           <span key={i} className={`CodeInput-Row-Span-${classname}`}>
-            {value}
+            {value ? value : `&nbsp;`}
           </span>
         ))}
       </div>
