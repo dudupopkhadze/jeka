@@ -47,6 +47,9 @@ export const CodeInput = () => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    ref.current?.focus();
+    e.stopPropagation();
+
     switch (e.key) {
       case "Down": // IE/Edge specific value
       case "ArrowDown":
@@ -82,6 +85,12 @@ export const CodeInput = () => {
           value: codeController.contact(" ", activeRow),
         });
         break;
+      case "Tab":
+        setState({
+          activeRow: activeRow,
+          value: codeController.contact("    ", activeRow),
+        });
+        break;
 
       case "Esc": // IE/Edge specific value
       case "Escape":
@@ -90,6 +99,7 @@ export const CodeInput = () => {
         return; // Quit when this doesn't handle the key event.
     }
   };
+
   const switchToRow = useCallback(
     (rowNumber: number) => {
       setState({
@@ -130,6 +140,7 @@ export const CodeInput = () => {
       })}
       <input
         ref={ref}
+        tabIndex={1}
         className="CodeInput-Row-Input"
         style={{
           top: `${4 + 20 * activeRow}px`,
@@ -139,6 +150,7 @@ export const CodeInput = () => {
         onChange={handleValueChange}
         onKeyDown={handleKeyPress}
       />
+      <div tabIndex={0} onFocus={() => ref.current?.focus()} />
     </div>
   );
 };
