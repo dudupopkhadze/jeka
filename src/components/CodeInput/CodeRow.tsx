@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
-import { useCodeControllerContext } from "../../controllers";
-import "../../styles/CodeInput.css";
-
+import { useCodeControllerContext } from "../../hooks";
+import "./CodeInput.css";
 interface CodeRowProps {
   rowNumber: number;
   isActive: boolean;

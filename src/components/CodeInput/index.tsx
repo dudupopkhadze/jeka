@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import "../../styles/CodeInput.css";
-import { useCodeControllerContext } from "../../controllers";
+import "./CodeInput.css";
+import { useCodeControllerContext } from "../../hooks";
 import CodeRow from "./CodeRow";
 import { measureText } from "../../utils";
 

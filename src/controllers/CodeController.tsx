@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
-
 const INITIAL_SIZE = 15;
 
-class CodeController {
+export class CodeController {
   data: string[];
   c: number;
   constructor() {
@@ -38,23 +36,3 @@ class CodeController {
     return this.data.length;
   }
 }
-
-const codeController = new CodeController();
-
-export const CodeControllerContext = React.createContext<
-  { codeController: CodeController } | undefined
->(undefined);
-
-export const CodeControllerContextProvider: React.FC = ({ children }) => {
-  return (
-    <CodeControllerContext.Provider value={{ codeController }}>
-      {children}
-    </CodeControllerContext.Provider>
-  );
-};
-
-export const useCodeControllerContext = () => {
-  const context = useContext(CodeControllerContext);
-  if (!context) throw new Error("CodeControllerContext is not Under Provider");
-  return context;
-};

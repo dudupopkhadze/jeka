@@ -1,13 +1,13 @@
 import React from "react";
-import { Board } from "./components/Board";
-import { CodeInput } from "./components/CodeInput";
-import { CodeControllerContextProvider } from "./controllers";
+import { Board, CodeInput, Header } from "./components";
+import { CodeControllerContextProvider } from "./contexts";
 import "./styles/App.css";
 
 function App() {
   return (
     <CodeControllerContextProvider>
       <div className="App">
+        <Header />
         <div className="App-Container">
           <CodeInput />
           <Board />
