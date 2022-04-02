@@ -2,10 +2,9 @@ const INITIAL_SIZE = 15;
 
 export class CodeController {
   data: string[];
-  c: number;
+
   constructor() {
     this.data = new Array(INITIAL_SIZE).fill("");
-    this.c = 0;
     this.data[2] = "cool dude";
     this.data[0] = "hello ";
 
@@ -25,6 +24,14 @@ export class CodeController {
 
   getData(index: number) {
     return this.data[index];
+  }
+
+  compile() {
+    console.log(this.data);
+  }
+
+  insertRow(index: number) {
+    this.data.splice(index, 0, "");
   }
 
   grow() {

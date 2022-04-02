@@ -1,5 +1,28 @@
 .Header {
   height: 50px;
-  width: 100%;
-  background-color: red;
+  padding: 0px 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid rgb(86, 79, 79);
+}
+
+.Header-Compile {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: greenyellow;
+  color: white;
+  padding: 4px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.Header-Compile-Icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  fill: white;
 }
