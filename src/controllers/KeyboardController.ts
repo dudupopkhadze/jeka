@@ -4,6 +4,7 @@ export class KeyboardController {
   static handleKeyPress(
     key: string,
     activeRow: number,
+    selectionOffset: number,
     codeController: CodeController
   ) {
     switch (key) {
@@ -17,15 +18,19 @@ export class KeyboardController {
 
       case "Left": // IE/Edge specific value
       case "ArrowLeft": {
-        if (!codeController.getData(activeRow)) {
-          return KeyboardController.handleArrowUp(activeRow, codeController);
-        }
-
-        return null;
+        return KeyboardController.handleArrowLeft(
+          activeRow,
+          selectionOffset,
+          codeController
+        );
       }
       case "Right": // IE/Edge specific value
       case "ArrowRight":
-        return KeyboardController.handleSpace(activeRow, codeController);
+        return KeyboardController.handleArrowRight(
+          activeRow,
+          selectionOffset,
+          codeController
+        );
 
       case "Enter":
         return KeyboardController.handleEnter(activeRow, codeController);
@@ -47,6 +52,38 @@ export class KeyboardController {
     }
   }
 
+  static handleArrowLeft(
+    activeRow: number,
+    selectionOffset: number,
+    codeController: CodeController
+  ) {
+    if (!codeController.getData(activeRow)) {
+      return KeyboardController.handleArrowUp(activeRow, codeController);
+    }
+
+    return {
+      activeRow: activeRow,
+      value: codeController.getData(activeRow),
+      selectionOffset: selectionOffset + 1,
+    };
+  }
+
+  static handleArrowRight(
+    activeRow: number,
+    selectionOffset: number,
+    codeController: CodeController
+  ) {
+    if (selectionOffset === 0) {
+      return KeyboardController.handleSpace(activeRow, codeController);
+    }
+
+    return {
+      activeRow: activeRow,
+      value: codeController.getData(activeRow),
+      selectionOffset: selectionOffset - 1,
+    };
+  }
+
   static handleArrowUp(activeRow: number, codeController: CodeController) {
     const nextValue = activeRow - 1;
 
@@ -56,6 +93,7 @@ export class KeyboardController {
     return {
       activeRow: nextValue,
       value: codeController.getData(nextValue),
+      selectionOffset: 0,
     };
   }
 
@@ -68,6 +106,7 @@ export class KeyboardController {
     return {
       activeRow: nextValue,
       value: codeController.getData(nextValue),
+      selectionOffset: 0,
     };
   }
 
@@ -76,6 +115,7 @@ export class KeyboardController {
     return {
       activeRow: activeRow + 1,
       value: codeController.getData(activeRow + 1),
+      selectionOffset: 0,
     };
   }
 
@@ -88,6 +128,7 @@ export class KeyboardController {
         curValue.substring(0, curValue.length - 1),
         activeRow
       ),
+      selectionOffset: 0,
     };
   }
 
@@ -95,6 +136,7 @@ export class KeyboardController {
     return {
       activeRow: activeRow,
       value: codeController.contact(" ", activeRow),
+      selectionOffset: 0,
     };
   }
 
@@ -102,6 +144,7 @@ export class KeyboardController {
     return {
       activeRow: activeRow,
       value: codeController.contact("    ", activeRow),
+      selectionOffset: 0,
     };
   }
 }

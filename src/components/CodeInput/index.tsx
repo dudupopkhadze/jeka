@@ -8,24 +8,44 @@ import { KeyboardController } from "../../controllers";
 interface CodeInputState {
   activeRow: number;
   value: string;
+  selectionOffset: number;
 }
 
 export const CodeInput = () => {
   const { codeController } = useCodeControllerContext();
   const ref = useRef<HTMLInputElement>(null);
-  const [{ activeRow, value }, setState] = useState<CodeInputState>({
-    activeRow: 0,
-    value: codeController.getData(0),
-  });
+  const [{ activeRow, value, selectionOffset }, setState] =
+    useState<CodeInputState>({
+      activeRow: 0,
+      value: codeController.getData(0),
+      selectionOffset: 0,
+    });
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     ref.current?.focus();
     e.stopPropagation();
 
     let stateCandidate: CodeInputState | null =
-      KeyboardController.handleKeyPress(e.key, activeRow, codeController);
+      KeyboardController.handleKeyPress(
+        e.key,
+        activeRow,
+        selectionOffset,
+        codeController
+      );
 
     if (stateCandidate) setState(stateCandidate);
+  };
+
+  const getInputStyles = () => {
+    const selection = measureText(
+      value.substring(value.length - selectionOffset)
+    ).width;
+    const offset = selection ? selection + 2 : 0;
+
+    return {
+      top: `${4 + 20 * activeRow}px`,
+      left: `${25 + measureText(value).width - offset}px`,
+    };
   };
 
   const switchToRow = useCallback(
@@ -33,6 +53,7 @@ export const CodeInput = () => {
       setState({
         activeRow: rowNumber,
         value: codeController.getData(rowNumber),
+        selectionOffset: 0,
       });
       ref.current?.focus();
     },
@@ -70,10 +91,7 @@ export const CodeInput = () => {
         ref={ref}
         tabIndex={1}
         className="CodeInput-Row-Input"
-        style={{
-          top: `${4 + 20 * activeRow}px`,
-          left: `${25 + measureText(value).width}px`,
-        }}
+        style={getInputStyles()}
         value={""}
         onChange={handleValueChange}
         onKeyDown={handleKeyPress}
