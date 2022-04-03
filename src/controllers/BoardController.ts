@@ -2,6 +2,7 @@ import { Board } from "../types";
 
 const CIRCLE_RADIUS = 5;
 const CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
+const JEKA_SIZE = 50;
 const CANVAS_WIDTH = 600;
 const CANVAS_HEIGHT = 600;
 const PADDING = 30;
@@ -106,16 +107,31 @@ export class BoardController {
     return { x, y };
   }
 
-  drawJeka(x: number, y: number) {
+  drawJeka(x: number, y: number, angle?: number) {
     const ctx = this.getContext();
+
     const img = new Image();
     const svg64 = btoa(svg);
     const b64Start = "data:image/svg+xml;base64,";
     const image64 = b64Start + svg64;
     img.src = image64;
-
     img.onload = () => {
+      // ctx.drawImage(img, x, y, 1, -Math.PI / 2);
+      ctx.save();
+
+      if (angle) {
+        ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
+
+        ctx.rotate(angle);
+        ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
+      }
+
+      // draw the image
+      // since the ctx is rotated, the image will be rotated also
       ctx.drawImage(img, x, y);
+
+      // we’re done with the rotating so restore the unrotated ctx
+      ctx.restore();
     };
   }
 
@@ -140,12 +156,19 @@ export class BoardController {
   drawTest() {
     this.clearBoard();
     this.drawWorld();
-    this.drawJeka(PADDING - 25, CANVAS_HEIGHT - PADDING - 25);
+    this.drawJeka(
+      PADDING - JEKA_SIZE / 2,
+      CANVAS_HEIGHT - PADDING - JEKA_SIZE / 2
+    );
   }
   drawTest2() {
     this.clearBoard();
     this.drawWorld();
-    const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (this.board.columns - 1);
-    this.drawJeka(PADDING - 25, dy * 1 + CIRCLE_DIAMETER - 25);
+
+    this.drawJeka(
+      PADDING - JEKA_SIZE / 2,
+      CANVAS_HEIGHT - PADDING - JEKA_SIZE / 2,
+      -Math.PI / 2
+    );
   }
 }
