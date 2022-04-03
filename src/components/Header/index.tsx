@@ -12,13 +12,30 @@ export const Header: React.FC = () => {
     <div className="Header">
       <button
         onClick={() => {
-          codeController.compile();
-          boardController.drawWorld();
+          boardController.drawTest();
         }}
         className="Header-Compile"
       >
         <PlaySVG className="Header-Compile-Icon" />
         Compile
+      </button>
+      <button
+        onClick={() => {
+          boardController.drawTest2();
+        }}
+        className="Header-Compile"
+      >
+        <PlaySVG className="Header-Compile-Icon" />
+        Turn
+      </button>
+      <button
+        onClick={() => {
+          boardController.clearBoard();
+        }}
+        className="Header-Compile"
+      >
+        <PlaySVG className="Header-Compile-Icon" />
+        Clear
       </button>
     </div>
   );
