@@ -12,12 +12,13 @@ export const Header: React.FC = () => {
     <div className="Header">
       <button
         onClick={() => {
+          codeController.compile();
           boardController.drawTest();
         }}
         className="Header-Compile"
       >
         <PlaySVG className="Header-Compile-Icon" />
-        Compile
+        Run
       </button>
       <button
         onClick={() => {

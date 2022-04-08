@@ -1,3 +1,5 @@
+import { JekaCommand } from "../types";
+
 const INITIAL_SIZE = 15;
 
 export class CodeController {
@@ -5,11 +7,6 @@ export class CodeController {
 
   constructor() {
     this.data = new Array(INITIAL_SIZE).fill("");
-    this.data[2] = "cool dude";
-    this.data[0] = "hello ";
-
-    this.data[6] = "function test";
-    this.data[8] = "const a = 5;";
   }
 
   contact(v: string, index: number) {
@@ -26,8 +23,9 @@ export class CodeController {
     return this.data[index];
   }
 
-  compile() {
+  compile(): JekaCommand[] {
     console.log(this.data);
+    return [];
   }
 
   insertRow(index: number) {
