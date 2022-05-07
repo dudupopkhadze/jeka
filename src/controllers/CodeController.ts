@@ -2,6 +2,22 @@ import { JekaCommand } from "../types";
 
 const INITIAL_SIZE = 15;
 
+const ValidCommands: { code: string; value: JekaCommand }[] = [
+  { code: "turnRight", value: JekaCommand.TurnRight },
+  { code: "moveForward", value: JekaCommand.MoveForward },
+];
+
+interface Function {
+  name: string;
+  commands: JekaCommand[];
+}
+
+interface CompilationError {
+  line: number;
+  token: string;
+  description: string;
+}
+
 export class CodeController {
   private data: string[];
 
@@ -23,9 +39,36 @@ export class CodeController {
     return this.data[index];
   }
 
-  compile(): JekaCommand[] {
-    console.log(this.data);
-    return [];
+  compile(): { commands: JekaCommand[] } {
+    const commands: JekaCommand[] = [];
+    const functions: Function[] = [];
+    const errors: CompilationError[] = [];
+
+    for (let i = 0; i < this.length(); i++) {
+      const codeRow = this.getData(i);
+      const tokens = codeRow.split(" ");
+      tokens.forEach((t) => {
+        console.log(t);
+        const isCommand = ValidCommands.find(
+          (e) => e.code === t.replace("()", "")
+        );
+        if (isCommand) {
+          commands.push(isCommand.value);
+          return;
+        }
+
+        const isFunction = functions.find(
+          (f) => f.name === t.replace("(){", "")
+        );
+
+        if (isFunction) {
+          commands.concat(isFunction.commands);
+          return;
+        }
+      });
+    }
+
+    return { commands };
   }
 
   insertRow(index: number) {
