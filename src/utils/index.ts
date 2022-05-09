@@ -20,3 +20,12 @@ export const measureText = (text: string, fontSize: number = 18) => {
 
   return lResult;
 };
+
+export const arrayToString = (arr: string[]) => {
+  let result = "";
+  arr.forEach((str) => {
+    result += `${str}\n`;
+  });
+
+  return result;
+};

@@ -5,6 +5,7 @@ export enum TokenType {
   RIGHT_BRACE,
   SEMICOLON,
   ELSE,
+  FUNCTION,
   IF,
   WHILE,
   EOF,
