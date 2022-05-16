@@ -13,7 +13,6 @@ export const Header: React.FC = () => {
       <button
         onClick={() => {
           codeController.compile();
-          boardController.drawTest();
         }}
         className="Header-Compile"
       >

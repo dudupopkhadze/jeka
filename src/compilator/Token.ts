@@ -1,6 +1,6 @@
 import { TokenType } from "./TokenType";
 
-type Literal = Object | null;
+export type Literal = Object | null;
 
 export class Token {
   private type: TokenType;
