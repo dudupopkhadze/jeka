@@ -15,7 +15,7 @@ export class Scanner {
   }
 
   private setUpKeywords() {
-    this.keywords.set("functions", TokenType.FUNCTION);
+    this.keywords.set("function", TokenType.FUNCTION);
     this.keywords.set("else", TokenType.ELSE);
     this.keywords.set("if", TokenType.IF);
     this.keywords.set("while", TokenType.WHILE);
