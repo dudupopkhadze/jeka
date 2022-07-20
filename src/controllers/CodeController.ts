@@ -1,4 +1,4 @@
-import { Compiler } from "../compilator";
+import { Compiler } from "../Compiler";
 
 const INITIAL_SIZE = 15;
 
