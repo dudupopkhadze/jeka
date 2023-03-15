@@ -5,14 +5,14 @@ import { useCodeControllerContext } from "../../hooks";
 import { useBoardControllerContext } from "../../hooks/useBoardControllerContext";
 
 export const Header: React.FC = () => {
-  const { codeController } = useCodeControllerContext();
+  // const { codeController } = useCodeControllerContext();
   const { boardController } = useBoardControllerContext();
 
   return (
     <div className="Header">
       <button
         onClick={() => {
-          codeController.compile();
+          // codeController.compile();
         }}
         className="Header-Compile"
       >

@@ -1,9 +1,21 @@
 .CodeInput-Container {
-  background-color: #272822;
+  /* background-color: #272822; */
+
+  min-width: 500px;
+  width: 600px;
+  height: 600px;
+  margin: auto;
+
+  overflow: scroll;
+  position: relative;
+}
+
+.cm-editor {
   padding: 5px;
   min-width: 500px;
   width: 600px;
   height: 600px;
+  background-color: white;
   margin: auto;
   border-radius: 10px;
   overflow: scroll;

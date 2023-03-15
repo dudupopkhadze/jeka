@@ -29,7 +29,7 @@ export class CodeController {
   compile() {
     const source = this.data.join("\n");
     console.log(source);
-    this.compiler.compile(source);
+    this.compiler.compile([source]);
   }
 
   insertRow(index: number) {
