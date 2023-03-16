@@ -7,7 +7,11 @@ export const BoardControllerContext = React.createContext<
   { boardController: BoardController } | undefined
 >(undefined);
 
-export const BoardControllerContextProvider: React.FC = ({ children }) => {
+export const BoardControllerContextProvider = ({
+  children,
+}: {
+  children: React.ReactElement;
+}) => {
   return (
     <BoardControllerContext.Provider value={{ boardController }}>
       {children}

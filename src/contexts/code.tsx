@@ -12,7 +12,11 @@ export const CodeControllerContext = React.createContext<
   ICodeControllerContext | undefined
 >(undefined);
 
-export const CodeControllerContextProvider: React.FC = ({ children }) => {
+export const CodeControllerContextProvider = ({
+  children,
+}: {
+  children: React.ReactElement;
+}) => {
   const [element, setElement] = useState<HTMLElement>();
   const curDocValue = useRef<string>("");
 
