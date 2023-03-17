@@ -1,13 +1,13 @@
 import React from "react";
 import "./style.css";
 import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
-import { useCodeControllerContext } from "../../hooks";
-import { useBoardControllerContext } from "../../hooks/useBoardControllerContext";
+import { useCodeController } from "../../hooks";
+import { useBoardController } from "../../hooks/useBoardController";
 import axios from "axios";
 
 export const Header: React.FC = () => {
-  const { value } = useCodeControllerContext();
-  const { boardController } = useBoardControllerContext();
+  const { value } = useCodeController();
+  const { boardController } = useBoardController();
 
   const handleRun = async () => {
     try {

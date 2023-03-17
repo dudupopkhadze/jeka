@@ -3,6 +3,7 @@ import { Board, CodeInput, Header } from "./components";
 import {
   BoardControllerContextProvider,
   CodeControllerContextProvider,
+  EngineContextProvider,
 } from "./contexts";
 import "./styles/App.css";
 
@@ -10,13 +11,15 @@ function App() {
   return (
     <CodeControllerContextProvider>
       <BoardControllerContextProvider>
-        <div className="App">
-          <Header />
-          <div className="App-Container">
-            <CodeInput />
-            <Board />
+        <EngineContextProvider>
+          <div className="App">
+            <Header />
+            <div className="App-Container">
+              <CodeInput />
+              <Board />
+            </div>
           </div>
-        </div>
+        </EngineContextProvider>
       </BoardControllerContextProvider>
     </CodeControllerContextProvider>
   );

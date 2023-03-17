@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { useBoardControllerContext } from "../../hooks/useBoardControllerContext";
+import { useBoardController } from "../../hooks/useBoardController";
 import "./style.css";
 
 export const Board = () => {
-  const { boardController } = useBoardControllerContext();
+  const { boardController } = useBoardController();
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {

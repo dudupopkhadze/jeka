@@ -1,8 +1,8 @@
 import "./CodeInput.css";
-import { useCodeControllerContext } from "../../hooks";
+import { useCodeController } from "../../hooks";
 
 export const CodeInput = () => {
-  const { codeInputRef } = useCodeControllerContext();
+  const { codeInputRef } = useCodeController();
 
   return <div className="CodeInput-Container" ref={codeInputRef} />;
 };
