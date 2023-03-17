@@ -4,9 +4,12 @@ import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
 import { useCodeController } from "../../hooks";
 import { useBoardController } from "../../hooks/useBoardController";
 import axios from "axios";
+import { JekaInstruction } from "../../types";
+import { useEngine } from "../../hooks/useEngine";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();
+  const { getEngine } = useEngine();
   const { boardController } = useBoardController();
 
   const handleRun = async () => {
@@ -15,9 +18,16 @@ export const Header: React.FC = () => {
         method: "post",
         url: "http://localhost:8080/compile",
         data: { code: value.current.split("\n") },
-      }).then((res: { data: { result: string[] } }) => res.data);
+      }).then(
+        (res: { data: { result: JekaInstruction[] } }) => res.data.result
+      );
 
-      console.log(res?.result);
+      console.log("asdas");
+
+      const engine = getEngine();
+      engine.process(res);
+
+      // console.log(res?.result);
     } catch (error) {
       console.log(error);
     }

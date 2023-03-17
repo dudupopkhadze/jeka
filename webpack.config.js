@@ -7,7 +7,7 @@ module.exports = {
     filename: "bundle.js",
   },
   devServer: {
-    port: 8080,
+    port: 3000,
   },
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],

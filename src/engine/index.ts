@@ -1,9 +1,5 @@
 import { BoardController } from "../controllers";
-
-export enum Instruction {
-  TURN_LEFT = "TURN_LEFT",
-  MOVE_FORWARD = "MOVE_FORWARD",
-}
+import { JekaInstruction } from "../types";
 
 export class Engine {
   boardController: BoardController;
@@ -12,11 +8,11 @@ export class Engine {
     this.boardController = boardController;
   }
 
-  process(instructions: Instruction[]) {
+  process(instructions: JekaInstruction[]) {
     console.log("Engine is processing", instructions);
   }
 
-  private processSingleInstruction(instruction: Instruction) {
+  private processSingleInstruction(instruction: JekaInstruction) {
     console.log("Engine is processing single instruction", instruction);
   }
 }

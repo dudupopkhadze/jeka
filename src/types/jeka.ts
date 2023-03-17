@@ -1,4 +1,4 @@
-export enum JekaCommand {
-  TurnRight = 0,
-  MoveForward = 1,
+export enum JekaInstruction {
+  TURN_LEFT = "TURN_LEFT",
+  MOVE_FORWARD = "MOVE_FORWARD",
 }
