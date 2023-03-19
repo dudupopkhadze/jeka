@@ -7,10 +7,10 @@ on:
       - main
 
 jobs:
-  check:
+  deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Check PR
-    needs: [Type-Check]
 
     steps:
       - name: Checkout
