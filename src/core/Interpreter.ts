@@ -19,7 +19,6 @@ import {
   Function,
   If,
   Print,
-  Return as ReturnStmt,
   Statement,
   StatementVisitor,
   Var,
@@ -84,12 +83,6 @@ export class Interpreter
       const err = error as RuntimeError;
       Mustang.runtimeError(err);
     }
-  }
-
-  visitReturnStatement(stmt: ReturnStmt): void {
-    let value = null;
-    if (stmt.value != null) value = this.evaluate(stmt.value);
-    throw new Return(value);
   }
 
   visitFunctionStatement(stmt: Function): void {
@@ -209,12 +202,6 @@ export class Interpreter
       case TokenType.MINUS:
         this.checkNumberOperands(expr.operator, left, right);
         return Number(left) - Number(right);
-      case TokenType.SLASH:
-        this.checkNumberOperands(expr.operator, left, right);
-        return Number(left) / Number(right);
-      case TokenType.STAR:
-        this.checkNumberOperands(expr.operator, left, right);
-        return Number(left) * Number(right);
       case TokenType.PLUS: {
         if (typeof left === "number" && typeof right === "number") {
           return Number(left) + Number(right);

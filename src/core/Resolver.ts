@@ -19,7 +19,6 @@ import {
   Function,
   If,
   Print,
-  Return,
   Statement,
   StatementVisitor,
   Var,
@@ -90,15 +89,6 @@ export class Resolver
 
   visitPrintStatement(stmt: Print): void {
     this.resolveSingleExpression(stmt.expression);
-  }
-
-  visitReturnStatement(stmt: Return): void {
-    if (this.currentFunction === FunctionType.NONE) {
-      Mustang.errorWithToken(stmt.keyword, "Can't return from top-level code.");
-    }
-    if (stmt.value !== null) {
-      this.resolveSingleExpression(stmt.value);
-    }
   }
 
   visitWhileStatement(stmt: While): void {

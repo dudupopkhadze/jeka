@@ -17,7 +17,6 @@ import {
   Function,
   If,
   Print,
-  Return,
   Statement,
   Var,
   While,
@@ -97,20 +96,9 @@ export class Parser {
     if (this.match(TokenType.FOR)) return this.forStatement();
     if (this.match(TokenType.IF)) return this.ifStatement();
     if (this.match(TokenType.PRINT)) return this.printStatement();
-    if (this.match(TokenType.RETURN)) return this.returnStatement();
     if (this.match(TokenType.WHILE)) return this.whileStatement();
     if (this.match(TokenType.LEFT_BRACE)) return new Block(this.block());
     return this.expressionStatement();
-  }
-
-  private returnStatement() {
-    const keyword = this.previous();
-    let value = null;
-    if (!this.check(TokenType.SEMICOLON)) {
-      value = this.expression();
-    }
-    this.consume(TokenType.SEMICOLON, "Expect ';' after return value.");
-    return new Return(keyword, value!);
   }
 
   private forStatement() {
@@ -274,21 +262,9 @@ export class Parser {
   }
 
   private term(): Expression {
-    let expr = this.factor();
-
-    while (this.match(TokenType.MINUS, TokenType.PLUS)) {
-      const operator = this.previous();
-      const right = this.factor();
-      expr = new Binary(expr, right, operator);
-    }
-
-    return expr;
-  }
-
-  private factor(): Expression {
     let expr = this.unary();
 
-    while (this.match(TokenType.SLASH, TokenType.STAR)) {
+    while (this.match(TokenType.MINUS, TokenType.PLUS)) {
       const operator = this.previous();
       const right = this.unary();
       expr = new Binary(expr, right, operator);
@@ -337,8 +313,7 @@ export class Parser {
   private primary(): Expression {
     if (this.match(TokenType.FALSE)) return new Literal(false);
     if (this.match(TokenType.TRUE)) return new Literal(true);
-    if (this.match(TokenType.NIL)) return new Literal(null);
-    if (this.match(TokenType.NUMBER, TokenType.STRING))
+    if (this.match(TokenType.NUMBER))
       return new Literal(this.previous().literal);
     if (this.match(TokenType.IDENTIFIER)) {
       return new Variable(this.previous());
@@ -369,14 +344,12 @@ export class Parser {
       if (this.previous().type === TokenType.SEMICOLON) return;
 
       switch (this.peek().type) {
-        case TokenType.CLASS:
         case TokenType.FUN:
         case TokenType.VAR:
         case TokenType.FOR:
         case TokenType.IF:
         case TokenType.WHILE:
         case TokenType.PRINT:
-        case TokenType.RETURN:
           return;
       }
 

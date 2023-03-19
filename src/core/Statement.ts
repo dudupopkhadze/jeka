@@ -13,21 +13,6 @@ export interface StatementVisitor<T> {
   visitIfStatement(stmt: If): T;
   visitWhileStatement(stmt: While): T;
   visitFunctionStatement(stmt: Function): T;
-  visitReturnStatement(stmt: Return): T;
-}
-
-export class Return extends Statement {
-  keyword: Token;
-  value: Expression;
-  constructor(keyword: Token, value: Expression) {
-    super();
-    this.keyword = keyword;
-    this.value = value;
-  }
-
-  accept<T>(visitor: StatementVisitor<T>): T {
-    return visitor.visitReturnStatement(this);
-  }
 }
 
 export class Block extends Statement {

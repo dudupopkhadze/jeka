@@ -9,18 +9,13 @@ export class Scanner {
   result: Token[];
   keywords: Record<string, TokenType> = {
     and: TokenType.AND,
-    class: TokenType.CLASS,
     else: TokenType.ELSE,
     false: TokenType.FALSE,
     for: TokenType.FOR,
     fun: TokenType.FUN,
     if: TokenType.IF,
-    nil: TokenType.NIL,
     or: TokenType.OR,
     print: TokenType.PRINT,
-    return: TokenType.RETURN,
-    super: TokenType.SUPER,
-    this: TokenType.THIS,
     true: TokenType.TRUE,
     var: TokenType.VAR,
     while: TokenType.WHILE,
@@ -58,12 +53,7 @@ export class Scanner {
       case "}":
         this.addToken(TokenType.RIGHT_BRACE);
         break;
-      case ",":
-        this.addToken(TokenType.COMMA);
-        break;
-      case ".":
-        this.addToken(TokenType.DOT);
-        break;
+
       case "-":
         this.addToken(TokenType.MINUS);
         break;
@@ -73,8 +63,8 @@ export class Scanner {
       case ";":
         this.addToken(TokenType.SEMICOLON);
         break;
-      case "*":
-        this.addToken(TokenType.STAR);
+      case ",":
+        this.addToken(TokenType.COMMA);
         break;
 
       case "!":
@@ -94,13 +84,12 @@ export class Scanner {
         );
         break;
 
+      // @ts-ignore
       case "/": {
         if (this.match("/")) {
           while (this.peek() !== "\n" && !this.isAtEnd()) this.advance();
-        } else {
-          this.addToken(TokenType.SLASH);
+          break;
         }
-        break;
       }
 
       case " ":
@@ -110,9 +99,6 @@ export class Scanner {
         break;
       case "\n":
         this.line++;
-        break;
-      case `"`:
-        this.string();
         break;
 
       default: {
@@ -158,22 +144,6 @@ export class Scanner {
       TokenType.NUMBER,
       Number(this.source.substring(this.start, this.current))
     );
-  }
-
-  private string() {
-    while (this.peek() !== `"` && !this.isAtEnd()) {
-      if (this.peek() === "\n") this.line++;
-      this.advance();
-    }
-
-    if (this.isAtEnd()) {
-      Mustang.error(this.line, "Unterminated string.");
-      return;
-    }
-
-    this.advance();
-    const value = this.source.substring(this.start + 1, this.current - 1);
-    this.addTokenWithLiteral(TokenType.STRING, value);
   }
 
   private isDigit(str: string) {
