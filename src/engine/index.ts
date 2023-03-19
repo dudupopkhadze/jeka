@@ -15,11 +15,10 @@ export class Engine {
 
   constructor(
     boardController: BoardController,
-
     onError: ErrorHandler,
     delay?: number
   ) {
-    this.mustang = new Mustang(this.initJekaEnvironment.bind(this));
+    this.mustang = new Mustang(this.initJekaEnvironment.bind(this), onError);
     this.boardController = boardController;
     this.delay = delay || 500;
     this.onError = onError;

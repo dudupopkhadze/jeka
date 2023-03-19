@@ -10,9 +10,14 @@ export class Mustang {
   private interpreter: Interpreter;
   static hadError: boolean = false;
   static hadRuntimeError = false;
+  static onError: (error: string) => void;
 
-  constructor(initJekaEnvironment: (env: Environment) => void) {
+  constructor(
+    initJekaEnvironment: (env: Environment) => void,
+    onError: (error: string) => void
+  ) {
     this.interpreter = new Interpreter(initJekaEnvironment);
+    Mustang.onError = onError;
   }
 
   public run(input: string) {
@@ -43,6 +48,7 @@ export class Mustang {
 
   static runtimeError(error: RuntimeError) {
     console.log(error.message + "\n[line " + error.token.line + "]");
+    Mustang.onError(error.message + "\n[line " + error.token.line + "]");
     Mustang.hadRuntimeError = true;
   }
 
@@ -52,6 +58,7 @@ export class Mustang {
 
   private static report(line: number, where: string, message: string) {
     console.error(`[line ${line}] Error  ${where}: ${message}`);
+    Mustang.onError(`[line ${line}] Error  ${where}: ${message}`);
     this.hadError = true;
   }
 
