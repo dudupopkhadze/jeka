@@ -51,7 +51,6 @@ export class Mustang {
   }
 
   static errorWithToken(token: Token, message: string) {
-    console.log("eRRRO");
     if (token.type === TokenType.EOF) {
       this.report(token.line, " at end", message);
     } else {
