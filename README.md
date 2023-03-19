@@ -1,6 +1,8 @@
 # Jeka
 
-Jeka is an educational project inspired by Karel. Karel is an educational programming language for beginners, created  by Richard E. Pattis in his book Karel The Robot: A Gentle Introduction to the Art of Programming.
+Jeka is project inspired by Karel. 
+
+Karel is an educational programming language for beginners, created  by Richard E. Pattis in his book Karel The Robot: A Gentle Introduction to the Art of Programming.
 
 <img width="198" alt="Screenshot 2023-03-20 at 00 45 53" src="https://user-images.githubusercontent.com/48488310/226207949-e9bc68ec-3daf-43cd-955f-4637039ad1a2.png">
 
@@ -14,9 +16,9 @@ Jeka is simple robot named Karel that lives in an environment consisting of a gr
 
 
 
-## What is Jeka
+## How does Jeka work?
 
-Jeka has 4 main modules
+Jeka has 4 main modules:
 
 - ***Mustang*** (custom language interpreter that takes the code you write and translates it to the commands known to Jeka)
 - ***BoardController*** (module that takes care of drawing Jeka, Jeka's World and Jeka's moves)
