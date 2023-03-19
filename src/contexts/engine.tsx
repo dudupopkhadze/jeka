@@ -5,10 +5,11 @@ import { JekaInstruction } from "../types";
 
 type IEngineContext = {
   error: string | null;
-  processInstructions: (
+  processDirectInstructions: (
     instructions: JekaInstruction[],
     reset?: boolean
   ) => void;
+  processInput: (input: string) => void;
   setEngineProcessingDelay: (delay: number) => void;
   resetEngineState: () => void;
 };
@@ -30,12 +31,16 @@ export const EngineContextProvider = ({
     ref.current.setDelay(delay);
   }, []);
 
-  const processInstructions = useCallback(
+  const processDirectInstructions = useCallback(
     (instructions: JekaInstruction[], reset?: boolean) => {
-      ref.current.process(instructions, reset);
+      ref.current.processDirect(instructions, reset);
     },
     []
   );
+
+  const processInput = useCallback((input: string) => {
+    ref.current.process(input);
+  }, []);
 
   const resetEngineState = useCallback(() => {
     ref.current.reset();
@@ -45,7 +50,8 @@ export const EngineContextProvider = ({
     <EngineContext.Provider
       value={{
         error,
-        processInstructions,
+        processInput,
+        processDirectInstructions,
         setEngineProcessingDelay,
         resetEngineState,
       }}

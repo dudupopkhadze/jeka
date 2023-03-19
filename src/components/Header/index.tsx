@@ -8,12 +8,12 @@ import { Mustang } from "../../core";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();
-  const { processInstructions, error, resetEngineState } = useEngine();
+  const { processDirectInstructions, processInput, error, resetEngineState } =
+    useEngine();
 
   const handleRun = async () => {
     try {
-      const mustang = new Mustang();
-      mustang.run(value.current);
+      processInput(value.current);
     } catch (error) {
       console.log(error);
     }
@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            processInstructions([JekaInstruction.MOVE_FORWARD], false);
+            processDirectInstructions([JekaInstruction.MOVE_FORWARD], false);
           }}
           className="Header-Compile"
         >
@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            processInstructions([JekaInstruction.TURN_LEFT], false);
+            processDirectInstructions([JekaInstruction.TURN_LEFT], false);
           }}
           className="Header-Compile"
         >

@@ -30,6 +30,11 @@ export const CodeControllerContextProvider = ({
     if (!element) return;
 
     const state = EditorState.create({
+      doc: `
+moveForward();
+moveForward();
+moveForward();
+      `,
       extensions: [
         basicSetup,
         JekaLanguage(),

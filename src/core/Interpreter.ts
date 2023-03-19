@@ -28,45 +28,16 @@ import { LiteralValue, Token, TokenType } from "./Token";
 import { Callable, CallableFunc } from "./Callable";
 import { Return } from "./Return";
 
-const defineJekaInstructions = (env: Environment) => {
-  env.define(
-    "moveForward",
-    new (class implements Callable {
-      arity(): number {
-        return 0;
-      }
-      call(): unknown {
-        console.log("moveForward");
-        return;
-      }
-    })()
-  );
-
-  env.define(
-    "turnLeft",
-    new (class implements Callable {
-      arity(): number {
-        return 0;
-      }
-      call(): unknown {
-        console.log("turnLeft");
-        return;
-      }
-    })()
-  );
-};
-
 export class Interpreter
   implements ExpressionVisitor<LiteralValue>, StatementVisitor<void>
 {
   global: Environment;
   environment: Environment;
   locals: Record<string, { expr: Expression; depth: number }>;
-  constructor() {
+  constructor(initJekaEnvironment: (env: Environment) => void) {
     this.global = new Environment();
     this.locals = {};
-
-    defineJekaInstructions(this.global);
+    initJekaEnvironment(this.global);
     this.environment = this.global;
   }
 

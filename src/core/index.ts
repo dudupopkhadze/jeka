@@ -4,11 +4,16 @@ import { RuntimeError } from "./RuntimeError";
 import { Scanner } from "./Scanner";
 import { Token, TokenType } from "./Token";
 import { Resolver } from "./Resolver";
+import { Environment } from "./Environment";
 
 export class Mustang {
-  static interpreter = new Interpreter();
+  private interpreter: Interpreter;
   static hadError: boolean = false;
   static hadRuntimeError = false;
+
+  constructor(initJekaEnvironment: (env: Environment) => void) {
+    this.interpreter = new Interpreter(initJekaEnvironment);
+  }
 
   public run(input: string) {
     if (input) {
@@ -25,14 +30,14 @@ export class Mustang {
         return;
       }
 
-      const resolver = new Resolver(Mustang.interpreter);
+      const resolver = new Resolver(this.interpreter);
       resolver.resolve(statements);
 
       if (Mustang.hadError) {
         return;
       }
 
-      Mustang.interpreter.interpret(statements);
+      this.interpreter.interpret(statements);
     }
   }
 

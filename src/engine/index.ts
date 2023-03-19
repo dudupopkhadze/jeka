@@ -1,10 +1,13 @@
 import { BoardController } from "../controllers";
+import { Mustang } from "../core";
+import { Callable } from "../core/Callable";
+import { Environment } from "../core/Environment";
 import { JekaFacing, JekaInstruction } from "../types";
-import { angleToJekaFacingWithCurrentFacing } from "../utils";
 
 type ErrorHandler = (error: string | null) => void;
 export class Engine {
-  boardController: BoardController;
+  private mustang: Mustang;
+  private boardController: BoardController;
   private delay: number;
   private error: string | null = null;
   private onError: ErrorHandler;
@@ -12,15 +15,53 @@ export class Engine {
 
   constructor(
     boardController: BoardController,
+
     onError: ErrorHandler,
     delay?: number
   ) {
+    this.mustang = new Mustang(this.initJekaEnvironment.bind(this));
     this.boardController = boardController;
     this.delay = delay || 500;
     this.onError = onError;
   }
 
-  async process(instructions: JekaInstruction[], reset = true) {
+  private initJekaEnvironment(env: Environment) {
+    env.define(JekaInstruction.MOVE_FORWARD, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        new Promise((resolve) => {
+          console.log(this.delay);
+          this.timeouts.push(
+            setTimeout(() => {
+              if (this.error) {
+                return resolve(null);
+              }
+              this.processSingleInstruction(JekaInstruction.MOVE_FORWARD);
+              resolve(null);
+            }, this.delay * this.timeouts.length)
+          );
+        });
+      },
+    });
+
+    env.define(JekaInstruction.TURN_LEFT, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.processSingleInstruction(JekaInstruction.TURN_LEFT);
+      },
+    });
+  }
+
+  async process(input: string) {
+    this.prepareForExecution();
+    this.mustang.run(input);
+  }
+
+  async processDirect(instructions: JekaInstruction[], reset = true) {
     if (!instructions.length) return;
     if (reset) this.prepareForExecution();
 
