@@ -34,7 +34,11 @@ export const CodeControllerContextProvider = ({
 // moveForward - jeka goes forward
 // turnLeft - jeka turns left
 // also available are: if/else branching, while/for loops, functions and variables
-// e.g moveForward(); or turnLeft();`,
+// e.g moveForward(); or turnLeft();
+// function turnRight(){
+//   turnLeft();
+//   turnLeft();
+//}\n`,
       extensions: [
         basicSetup,
         JekaLanguage(),
