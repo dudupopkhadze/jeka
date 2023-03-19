@@ -1,14 +1,14 @@
-name: Type-Check
+name: Deploy
 
 on:
-  # workflow_call:
   pull_request:
-    types: ["opened", "edited", "reopened", "synchronize"]
+    types: ["closed"]
     branches:
       - main
 
 jobs:
-  check:
+  deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Check PR
 
@@ -22,5 +22,5 @@ jobs:
       - name: Install Dependencies
         run: npm install --ignore-scripts
 
-      - name: TypeScript Check
-        run: npm run ts
+      - name: Deploy to GH-Pages
+        run: npm run deploy -- -m "Deploy Jeka  to GitHub Pages"

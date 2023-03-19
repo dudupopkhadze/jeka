@@ -1,8 +1,8 @@
-name: Deploy
+name: Type-Check
 
 on:
   pull_request:
-    types: ["closed"]
+    types: ["opened", "edited", "reopened", "synchronize"]
     branches:
       - main
 
@@ -10,7 +10,6 @@ jobs:
   check:
     runs-on: ubuntu-latest
     name: Check PR
-    needs: [Type-Check]
 
     steps:
       - name: Checkout
@@ -22,5 +21,5 @@ jobs:
       - name: Install Dependencies
         run: npm install --ignore-scripts
 
-      - name: Deploy to GH-Pages
-        run: npm run deploy -- -m "Deploy Jeka  to GitHub Pages"
+      - name: TypeScript Check
+        run: npm run ts
