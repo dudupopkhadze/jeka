@@ -8,6 +8,7 @@ import {
 } from "@codemirror/language";
 import { styleTags, tags as t } from "@lezer/highlight";
 import { buildParser } from "@lezer/generator";
+import { completeFromList } from "@codemirror/autocomplete";
 
 const parser = buildParser(`
       @top Program { expression* }
@@ -20,7 +21,7 @@ const parser = buildParser(`
       }
 
       @tokens {
-        Identifier { "turnRight" | "moveForward" }
+        Identifier { "turnLeft" | "moveForward" }
 
         LineComment { "//" ![\n]* }
 
@@ -51,10 +52,17 @@ export const JekaLanguageDefined = LRLanguage.define({
     ],
   }),
   languageData: {
-    commentTokens: { line: ";" },
+    commentTokens: { line: "//" },
   },
 });
 
+export const jekaAutoComplete = JekaLanguageDefined.data.of({
+  autocomplete: completeFromList([
+    { label: "turnLeft", type: "keyword" },
+    { label: "moveForward", type: "keyword" },
+  ]),
+});
+
 export function JekaLanguage() {
-  return new LanguageSupport(JekaLanguageDefined);
+  return new LanguageSupport(JekaLanguageDefined, [jekaAutoComplete]);
 }
