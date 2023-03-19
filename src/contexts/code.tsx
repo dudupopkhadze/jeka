@@ -31,9 +31,10 @@ export const CodeControllerContextProvider = ({
 
     const state = EditorState.create({
       doc: `// available commands
-// moveForwards - jeka goes forward
+// moveForward - jeka goes forward
 // turnLeft - jeka turns left
-// also available are: if/else branching, while/for loops, functions and variables\n`,
+// also available are: if/else branching, while/for loops, functions and variables
+// e.g moveForward(); or turnLeft();`,
       extensions: [
         basicSetup,
         JekaLanguage(),

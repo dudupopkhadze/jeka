@@ -6,7 +6,8 @@
     "start": "webpack-dev-server --mode development --open --hot",
     "build": "webpack --mode production",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "ts": "tsc --noEmit"
   },
   "homepage": "https://dudupopkhadze.github.io/jeka",
   "dependencies": {

@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: ["closed"]
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: Check PR
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install Dependencies
+        run: npm install --ignore-scripts
+
+      - name: Deploy to GH-Pages
+        run: npm run deploy -- -m "Deploy Jeka  to GitHub Pages"
