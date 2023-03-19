@@ -33,7 +33,7 @@ export const EngineContextProvider = ({
 
   const processInstructions = useCallback(
     (instructions: JekaInstruction[], reset?: boolean) => {
-      ref.current.process(instructions);
+      ref.current.process(instructions, reset);
     },
     []
   );

@@ -1,4 +1,3 @@
-import { javascript } from "@codemirror/lang-javascript";
 import { EditorState } from "@codemirror/state";
 import { basicSetup, EditorView } from "codemirror";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -33,7 +32,6 @@ export const CodeControllerContextProvider = ({
     const state = EditorState.create({
       extensions: [
         basicSetup,
-        // javascript(),
         JekaLanguage(),
         EditorView.updateListener.of(function (e) {
           curDocValue.current = e.state.doc.toString();
