@@ -10,6 +10,31 @@
   position: relative;
 }
 
+.ͼb {
+  color: rgb(176 13 185);
+}
+
+.ͼe {
+  color: #0943f8;
+}
+
+.ͼm {
+  color: #0b9221;
+  font-style: italic;
+}
+
+.ͼj {
+  color: #42bece;
+}
+
+.ͼc {
+  color: #b22e19;
+}
+
+.ͼk {
+  color: #ff0127;
+}
+
 .cm-editor {
   padding: 5px;
   min-width: 500px;

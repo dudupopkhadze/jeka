@@ -36,6 +36,8 @@ fun sayHello(name){
       print "Not to you kevin";
   }
 }
+
+var a = 3;
     
 moveForward();
 
