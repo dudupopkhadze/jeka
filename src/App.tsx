@@ -16,7 +16,7 @@ function App() {
             <DelaySlider />
             <div className="App-Container">
               <CodeInput />
-              <Board />
+              {/* <Board /> */}
             </div>
           </div>
         </EngineContextProvider>

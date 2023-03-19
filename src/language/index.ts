@@ -17,6 +17,7 @@ const parser = buildParser(`
 
       expression {
         Identifier |
+        
         Application { "(" expression* ")" }
       }
 

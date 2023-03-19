@@ -6,6 +6,7 @@ import { useBoardController } from "../../hooks/useBoardController";
 import axios from "axios";
 import { JekaInstruction } from "../../types";
 import { useEngine } from "../../hooks/useEngine";
+import { Mustang } from "../../core";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();
@@ -14,6 +15,9 @@ export const Header: React.FC = () => {
 
   const handleRun = async () => {
     try {
+      const mustang = new Mustang();
+      mustang.run(value.current);
+
       // const res = await axios({
       //   method: "post",
       //   url: "http://localhost:8080/compile",
@@ -30,7 +34,7 @@ export const Header: React.FC = () => {
         // JekaInstruction.MOVE_FORWARD,
       ];
 
-      processInstructions(res);
+      // processInstructions(res);
 
       // console.log(res?.result);
     } catch (error) {

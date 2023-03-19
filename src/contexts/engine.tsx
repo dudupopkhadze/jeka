@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from "react";
-import { BoardController } from "../controllers";
 import { Engine } from "../engine";
 import { useBoardController } from "../hooks";
 import { JekaInstruction } from "../types";
@@ -33,7 +32,7 @@ export const EngineContextProvider = ({
 
   const processInstructions = useCallback(
     (instructions: JekaInstruction[], reset?: boolean) => {
-      ref.current.process(instructions);
+      ref.current.process(instructions, reset);
     },
     []
   );
