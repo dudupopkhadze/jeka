@@ -24,9 +24,12 @@ export const Header: React.FC = () => {
 
       const res = [
         JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
         JekaInstruction.TURN_LEFT,
         JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.TURN_LEFT,
+        JekaInstruction.TURN_LEFT,
+        JekaInstruction.TURN_LEFT,
+        // JekaInstruction.MOVE_FORWARD,
       ];
 
       const engine = getEngine();
@@ -44,12 +47,7 @@ export const Header: React.FC = () => {
         <PlaySVG className="Header-Compile-Icon" />
         Run
       </button>
-      <button
-        onClick={() => {
-          boardController.drawTest();
-        }}
-        className="Header-Compile"
-      >
+      <button onClick={() => {}} className="Header-Compile">
         <PlaySVG className="Header-Compile-Icon" />
         Turn
       </button>

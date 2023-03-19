@@ -53,8 +53,19 @@ export const angleToJekaFacing = (angle: number) => {
       return JekaFacing.NORTH;
     case Math.PI / 2:
       return JekaFacing.SOUTH;
+    case -Math.PI:
+      return JekaFacing.WEST;
 
     default:
       return JekaFacing.EAST;
   }
+};
+
+export const angleToJekaFacingWithCurrentFacing = (
+  angle: number,
+  currentFacing: JekaFacing
+): number => {
+  const currentAngle = jekaFacingToAngle(currentFacing);
+  const newAngle = currentAngle + angle;
+  return newAngle;
 };

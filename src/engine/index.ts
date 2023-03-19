@@ -1,5 +1,6 @@
 import { BoardController } from "../controllers";
 import { JekaFacing, JekaInstruction } from "../types";
+import { angleToJekaFacingWithCurrentFacing } from "../utils";
 
 export class Engine {
   boardController: BoardController;
@@ -7,7 +8,7 @@ export class Engine {
 
   constructor(boardController: BoardController, delay?: number) {
     this.boardController = boardController;
-    this.delay = delay || 300;
+    this.delay = delay || 1000;
   }
 
   async process(instructions: JekaInstruction[]) {
@@ -51,6 +52,7 @@ export class Engine {
 
   private processTurnLeft() {
     const jekaPosition = this.boardController.getJekaCoordinates();
+
     this.boardController.drawJekaWithBoardPosition(
       jekaPosition.row,
       jekaPosition.column,

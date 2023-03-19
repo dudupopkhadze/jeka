@@ -83,31 +83,10 @@ export class BoardController {
     return { x: x - JEKA_SIZE / 2, y: y - JEKA_SIZE / 2 };
   };
 
-  drawJeka(x: number, y: number, angle?: number) {
-    if (!this.jekaImageIsLoaded) return;
-    if (this.isWordInitialized) {
-      this.clearBoard();
-      this.drawWorld();
-    }
-
-    const ctx = this.getContext();
-
-    // ctx.drawImage(img, x, y, 1, -Math.PI / 2);
-    ctx.save();
-
-    if (angle) {
-      ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
-
-      ctx.rotate(angle);
-      ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
-    }
-
-    // draw the image
-    // since the ctx is rotated, the image will be rotated also
-    ctx.drawImage(this.jeka!, x, y);
-
-    // we’re done with the rotating so restore the unrotated ctx
-    ctx.restore();
+  private angleCalc(angle: number) {
+    const curAngle = jekaFacingToAngle(this.jekaCoordinates.facing);
+    const newAngle = curAngle + angle;
+    return newAngle;
   }
 
   drawJekaWithBoardPosition(row: number, column: number, angle?: number) {
@@ -122,18 +101,21 @@ export class BoardController {
 
     ctx.save();
 
-    if (angle || this.jekaCoordinates.facing) {
-      ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
-      ctx.rotate(angle || jekaFacingToAngle(this.jekaCoordinates.facing));
-      ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
-    }
+    //handle what position jeka is facing
+
+    ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
+    const newAngle = angle
+      ? this.angleCalc(angle)
+      : jekaFacingToAngle(this.jekaCoordinates.facing);
+    ctx.rotate(newAngle);
+    ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
 
     this.jekaCoordinates = {
       x,
       y,
       row,
       column,
-      facing: angle ? angleToJekaFacing(angle) : this.jekaCoordinates.facing,
+      facing: angleToJekaFacing(newAngle),
     };
 
     // draw the image
@@ -173,25 +155,6 @@ export class BoardController {
 
   drawJekaOnStart() {
     this.drawJekaWithBoardPosition(0, this.board.columns - 1);
-  }
-
-  drawTest() {
-    this.clearBoard();
-    this.drawWorld();
-    this.drawJeka(
-      PADDING - JEKA_SIZE / 2,
-      CANVAS_HEIGHT - PADDING - JEKA_SIZE / 2
-    );
-  }
-  drawTest2() {
-    this.clearBoard();
-    this.drawWorld();
-
-    this.drawJeka(
-      PADDING - JEKA_SIZE / 2,
-      CANVAS_HEIGHT - PADDING - JEKA_SIZE / 2,
-      -Math.PI / 2
-    );
   }
 }
 
