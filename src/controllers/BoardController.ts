@@ -48,14 +48,18 @@ export class BoardController {
     this.canvas = canvas;
   }
 
-  getContext() {
-    const context = this.canvas?.getContext("2d");
-    if (!context) throw new Error("No Context");
-    return context;
-  }
-
   getJekaCoordinates() {
     return this.jekaCoordinates;
+  }
+
+  isWorldInitialized() {
+    return this.isWordInitialized;
+  }
+
+  validateJekaMove(nextRow: number, nextColumn: number) {
+    if (nextRow < 0 || nextRow >= this.board.rows) return false;
+    if (nextColumn < 0 || nextColumn >= this.board.columns) return false;
+    return true;
   }
 
   drawJekaWithBoardPosition(row: number, column: number, angle?: number) {
@@ -98,11 +102,15 @@ export class BoardController {
     const ctx = this.getContext();
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 
-    this.isWordInitialized = false;
-  }
+    this.jekaCoordinates = {
+      x: 0,
+      y: 0,
+      row: 0,
+      column: 0,
+      facing: JekaFacing.EAST,
+    };
 
-  isWorldInitialized() {
-    return this.isWordInitialized;
+    this.isWordInitialized = false;
   }
 
   drawWorld() {
@@ -123,6 +131,12 @@ export class BoardController {
 
   drawJekaOnStart() {
     this.drawJekaWithBoardPosition(0, this.board.columns - 1);
+  }
+
+  private getContext() {
+    const context = this.canvas?.getContext("2d");
+    if (!context) throw new Error("No Context");
+    return context;
   }
 
   private getBoardCellCoordinates(row: number, column: number) {

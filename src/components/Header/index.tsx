@@ -9,7 +9,7 @@ import { useEngine } from "../../hooks/useEngine";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();
-  const { getEngine } = useEngine();
+  const { getEngine, error } = useEngine();
   const { boardController } = useBoardController();
 
   const handleRun = async () => {
@@ -24,11 +24,14 @@ export const Header: React.FC = () => {
 
       const res = [
         JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.TURN_LEFT,
         JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.TURN_LEFT,
-        JekaInstruction.TURN_LEFT,
-        JekaInstruction.TURN_LEFT,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+
         // JekaInstruction.MOVE_FORWARD,
       ];
 
@@ -43,23 +46,26 @@ export const Header: React.FC = () => {
 
   return (
     <div className="Header">
-      <button onClick={handleRun} className="Header-Compile">
-        <PlaySVG className="Header-Compile-Icon" />
-        Run
-      </button>
-      <button onClick={() => {}} className="Header-Compile">
-        <PlaySVG className="Header-Compile-Icon" />
-        Turn
-      </button>
-      <button
-        onClick={() => {
-          boardController.clearBoard();
-        }}
-        className="Header-Compile"
-      >
-        <PlaySVG className="Header-Compile-Icon" />
-        Clear
-      </button>
+      <div className="Header-Title-Wrapper ">
+        <span className="Header-Title">Jeka</span>
+        {error && <span className="Header-Error">{error}</span>}
+      </div>
+      <div className="Header-Controls">
+        <button onClick={handleRun} className="Header-Compile">
+          <PlaySVG className="Header-Compile-Icon" />
+          Run
+        </button>
+
+        <button
+          onClick={() => {
+            getEngine().reset();
+          }}
+          className="Header-Compile"
+        >
+          <PlaySVG className="Header-Compile-Icon" />
+          Clear
+        </button>
+      </div>
     </div>
   );
 };

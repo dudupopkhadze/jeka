@@ -2,9 +2,38 @@
   height: 50px;
   padding: 0px 20px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgb(86, 79, 79);
+}
+
+.Header-Title-Wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Header-Title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #f89d0f;
+  margin-right: 20px;
+}
+
+.Header-Error {
+  color: red;
+  font-size: 30px;
+  margin-right: 20px;
+  flex: 1;
+  text-align: center;
+}
+
+.Header-Controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .Header-Compile {
@@ -12,7 +41,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: #85b33d;
+  background-color: #f89d0f;
   color: white;
   padding: 4px;
   border: none;
