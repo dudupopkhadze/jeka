@@ -14,15 +14,20 @@ export const Header: React.FC = () => {
 
   const handleRun = async () => {
     try {
-      const res = await axios({
-        method: "post",
-        url: "http://localhost:8080/compile",
-        data: { code: value.current.split("\n") },
-      }).then(
-        (res: { data: { result: JekaInstruction[] } }) => res.data.result
-      );
+      // const res = await axios({
+      //   method: "post",
+      //   url: "http://localhost:8080/compile",
+      //   data: { code: value.current.split("\n") },
+      // }).then(
+      //   (res: { data: { result: JekaInstruction[] } }) => res.data.result
+      // );
 
-      console.log("asdas");
+      const res = [
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.TURN_LEFT,
+        JekaInstruction.MOVE_FORWARD,
+      ];
 
       const engine = getEngine();
       engine.process(res);
@@ -41,7 +46,7 @@ export const Header: React.FC = () => {
       </button>
       <button
         onClick={() => {
-          boardController.drawTest2();
+          boardController.drawTest();
         }}
         className="Header-Compile"
       >

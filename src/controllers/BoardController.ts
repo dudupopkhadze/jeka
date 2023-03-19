@@ -1,14 +1,45 @@
-import { Board } from "../types";
+import {
+  CANVAS_WIDTH,
+  CIRCLE_DIAMETER,
+  PADDING,
+  CANVAS_HEIGHT,
+  JEKA_SIZE,
+  CIRCLE_RADIUS,
+} from "../config";
+import { Board, JekaFacing } from "../types";
+import { angleToJekaFacing, jekaFacingToAngle } from "../utils";
 
 export class BoardController {
   private canvas?: HTMLCanvasElement;
   private board: Board;
   private jeka?: HTMLImageElement;
+  private isWordInitialized = false;
+  private jekaCoordinates = {
+    x: 0,
+    y: 0,
+    row: 0,
+    column: 0,
+    facing: JekaFacing.EAST,
+  };
+  private jekaImageIsLoaded = false;
 
   constructor() {
     this.board = {
       rows: 5,
       columns: 5,
+    };
+
+    this.jeka = new Image();
+
+    const svg64 = btoa(svg);
+    const b64Start = "data:image/svg+xml;base64,";
+    const image64 = b64Start + svg64;
+    this.jeka.src = image64;
+    this.jeka.onerror = () => {
+      alert("load error");
+    };
+    this.jeka.onload = () => {
+      this.jekaImageIsLoaded = true;
     };
   }
 
@@ -20,6 +51,10 @@ export class BoardController {
     const context = this.canvas?.getContext("2d");
     if (!context) throw new Error("No Context");
     return context;
+  }
+
+  getJekaCoordinates() {
+    return this.jekaCoordinates;
   }
 
   getBoardCellCoordinates(row: number, column: number) {
@@ -43,40 +78,85 @@ export class BoardController {
     return { x, y };
   }
 
+  getJekaCoordinatesForRowAndColumn = (row: number, column: number) => {
+    const { x, y } = this.getBoardCellCoordinates(row, column);
+    return { x: x - JEKA_SIZE / 2, y: y - JEKA_SIZE / 2 };
+  };
+
   drawJeka(x: number, y: number, angle?: number) {
+    if (!this.jekaImageIsLoaded) return;
+    if (this.isWordInitialized) {
+      this.clearBoard();
+      this.drawWorld();
+    }
+
     const ctx = this.getContext();
 
-    const img = new Image();
-    const svg64 = btoa(svg);
-    const b64Start = "data:image/svg+xml;base64,";
-    const image64 = b64Start + svg64;
-    img.src = image64;
-    img.onload = () => {
-      // ctx.drawImage(img, x, y, 1, -Math.PI / 2);
-      ctx.save();
+    // ctx.drawImage(img, x, y, 1, -Math.PI / 2);
+    ctx.save();
 
-      if (angle) {
-        ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
+    if (angle) {
+      ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
 
-        ctx.rotate(angle);
-        ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
-      }
+      ctx.rotate(angle);
+      ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
+    }
 
-      // draw the image
-      // since the ctx is rotated, the image will be rotated also
-      ctx.drawImage(img, x, y);
+    // draw the image
+    // since the ctx is rotated, the image will be rotated also
+    ctx.drawImage(this.jeka!, x, y);
 
-      // we’re done with the rotating so restore the unrotated ctx
-      ctx.restore();
+    // we’re done with the rotating so restore the unrotated ctx
+    ctx.restore();
+  }
+
+  drawJekaWithBoardPosition(row: number, column: number, angle?: number) {
+    if (this.isWordInitialized) {
+      this.clearBoard();
+      this.drawWorld();
+    }
+
+    const { x, y } = this.getJekaCoordinatesForRowAndColumn(row, column);
+
+    const ctx = this.getContext();
+
+    ctx.save();
+
+    if (angle || this.jekaCoordinates.facing) {
+      ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
+      ctx.rotate(angle || jekaFacingToAngle(this.jekaCoordinates.facing));
+      ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
+    }
+
+    this.jekaCoordinates = {
+      x,
+      y,
+      row,
+      column,
+      facing: angle ? angleToJekaFacing(angle) : this.jekaCoordinates.facing,
     };
+
+    // draw the image
+    // since the ctx is rotated, the image will be rotated also
+    ctx.drawImage(this.jeka!, x, y);
+
+    // we’re done with the rotating so restore the unrotated ctx
+    ctx.restore();
   }
 
   clearBoard() {
     const ctx = this.getContext();
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
+
+    this.isWordInitialized = false;
+  }
+
+  isWorldInitialized() {
+    return this.isWordInitialized;
   }
 
   drawWorld() {
+    if (!this.jekaImageIsLoaded) return;
     const context = this.getContext();
 
     for (let i = 0; i < this.board.rows; i++) {
@@ -87,6 +167,12 @@ export class BoardController {
         context.fill();
       }
     }
+
+    this.isWordInitialized = true;
+  }
+
+  drawJekaOnStart() {
+    this.drawJekaWithBoardPosition(0, this.board.columns - 1);
   }
 
   drawTest() {
@@ -108,13 +194,6 @@ export class BoardController {
     );
   }
 }
-
-const CIRCLE_RADIUS = 5;
-const CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
-const JEKA_SIZE = 50;
-const CANVAS_WIDTH = 600;
-const CANVAS_HEIGHT = 600;
-const PADDING = 30;
 
 const svg = `<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"

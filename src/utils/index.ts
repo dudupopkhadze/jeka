@@ -1,3 +1,5 @@
+import { JekaFacing } from "../types";
+
 export const measureText = (text: string, fontSize: number = 18) => {
   let lDiv: HTMLDivElement | null = document.createElement("div");
 
@@ -28,4 +30,31 @@ export const arrayToString = (arr: string[]) => {
   });
 
   return result;
+};
+
+export const jekaFacingToAngle = (facing: JekaFacing) => {
+  switch (facing) {
+    case JekaFacing.EAST:
+      return 0;
+    case JekaFacing.WEST:
+      return Math.PI;
+    case JekaFacing.NORTH:
+      return -Math.PI / 2;
+    case JekaFacing.SOUTH:
+      return Math.PI / 2;
+  }
+};
+
+export const angleToJekaFacing = (angle: number) => {
+  switch (angle) {
+    case Math.PI:
+      return JekaFacing.WEST;
+    case -Math.PI / 2:
+      return JekaFacing.NORTH;
+    case Math.PI / 2:
+      return JekaFacing.SOUTH;
+
+    default:
+      return JekaFacing.EAST;
+  }
 };
