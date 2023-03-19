@@ -30,6 +30,17 @@ export const CodeControllerContextProvider = ({
     if (!element) return;
 
     const state = EditorState.create({
+      doc: `
+fun sayHello(name){
+  if(name == "kevin"){
+      print "Not to you kevin";
+  }
+}
+    
+sayHello("Lebron");
+// outputs "Hey Lebron"
+    
+    `,
       extensions: [
         basicSetup,
         JekaLanguage(),

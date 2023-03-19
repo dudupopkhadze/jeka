@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from "react";
-import { BoardController } from "../controllers";
 import { Engine } from "../engine";
 import { useBoardController } from "../hooks";
 import { JekaInstruction } from "../types";
