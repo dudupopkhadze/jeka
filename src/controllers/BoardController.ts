@@ -79,6 +79,7 @@ export class BoardController {
     const newAngle = angle
       ? this.calculateNewJekaAngle(angle)
       : jekaFacingToAngle(this.jekaCoordinates.facing);
+
     ctx.rotate(newAngle);
     ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
 
@@ -101,7 +102,10 @@ export class BoardController {
   clearBoard() {
     const ctx = this.getContext();
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
+    this.isWordInitialized = false;
+  }
 
+  clearJekaCoordinates() {
     this.jekaCoordinates = {
       x: 0,
       y: 0,
@@ -109,8 +113,6 @@ export class BoardController {
       column: 0,
       facing: JekaFacing.EAST,
     };
-
-    this.isWordInitialized = false;
   }
 
   drawWorld() {

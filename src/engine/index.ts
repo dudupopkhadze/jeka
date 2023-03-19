@@ -20,9 +20,9 @@ export class Engine {
     this.onError = onError;
   }
 
-  async process(instructions: JekaInstruction[]) {
+  async process(instructions: JekaInstruction[], reset = true) {
     if (!instructions.length) return;
-    this.prepareForExecution();
+    if (reset) this.prepareForExecution();
 
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
@@ -45,6 +45,7 @@ export class Engine {
   }
 
   private prepareForExecution() {
+    this.boardController.clearJekaCoordinates();
     this.boardController.clearBoard();
     this.boardController.drawWorld();
     this.boardController.drawJekaOnStart();
@@ -84,11 +85,36 @@ export class Engine {
     }
   }
 
+  private getJekaNewRowForFacing(facing: JekaFacing) {
+    switch (facing) {
+      case JekaFacing.NORTH:
+        return 0;
+      case JekaFacing.EAST:
+        return 1;
+      case JekaFacing.SOUTH:
+        return 0;
+      case JekaFacing.WEST:
+        return -1;
+    }
+  }
+
+  private getJekaNewColumnForFacing(facing: JekaFacing) {
+    switch (facing) {
+      case JekaFacing.NORTH:
+        return -1;
+      case JekaFacing.EAST:
+        return 0;
+      case JekaFacing.SOUTH:
+        return 1;
+      case JekaFacing.WEST:
+        return 0;
+    }
+  }
+
   private processMoveForward() {
-    console.log("processMoveForward");
     const { row, column, facing } = this.boardController.getJekaCoordinates();
-    const newRow = facing === JekaFacing.NORTH ? row : row + 1;
-    const newColumn = facing === JekaFacing.NORTH ? column - 1 : column;
+    const newRow = this.getJekaNewRowForFacing(facing) + row;
+    const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
     const isValid = this.boardController.validateJekaMove(newRow, newColumn);
     if (!isValid) {

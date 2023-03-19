@@ -25,13 +25,8 @@ export const Header: React.FC = () => {
       const res = [
         JekaInstruction.MOVE_FORWARD,
         JekaInstruction.MOVE_FORWARD,
+        JekaInstruction.TURN_LEFT,
         JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
-        JekaInstruction.MOVE_FORWARD,
-
         // JekaInstruction.MOVE_FORWARD,
       ];
 
@@ -55,7 +50,24 @@ export const Header: React.FC = () => {
           <PlaySVG className="Header-Compile-Icon" />
           Run
         </button>
-
+        <button
+          onClick={() => {
+            getEngine().process([JekaInstruction.MOVE_FORWARD], false);
+          }}
+          className="Header-Compile"
+        >
+          <PlaySVG className="Header-Compile-Icon" />
+          Move
+        </button>
+        <button
+          onClick={() => {
+            getEngine().process([JekaInstruction.TURN_LEFT], false);
+          }}
+          className="Header-Compile"
+        >
+          <PlaySVG className="Header-Compile-Icon" />
+          Turn
+        </button>
         <button
           onClick={() => {
             getEngine().reset();
