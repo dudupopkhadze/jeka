@@ -32,11 +32,13 @@ export const CodeControllerContextProvider = ({
     const state = EditorState.create({
       doc: `
 fun sayHello(name){
-  if(name == "kevin"){
+  if(name == "Lebron"){
       print "Not to you kevin";
   }
 }
     
+moveForward();
+
 sayHello("Lebron");
 // outputs "Hey Lebron"
     

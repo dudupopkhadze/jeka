@@ -17,7 +17,6 @@ export class Scanner {
     if: TokenType.IF,
     nil: TokenType.NIL,
     or: TokenType.OR,
-    moveForward: TokenType.MOVE_FORWARD,
     print: TokenType.PRINT,
     return: TokenType.RETURN,
     super: TokenType.SUPER,

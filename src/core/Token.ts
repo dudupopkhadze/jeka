@@ -35,7 +35,6 @@ export enum TokenType {
   NIL = "NIL",
   OR = "OR",
   PRINT = "PRINT",
-  MOVE_FORWARD = "MOVE_FORWARD",
   RETURN = "RETURN",
   SUPER = "SUPER",
   THIS = "THIS",

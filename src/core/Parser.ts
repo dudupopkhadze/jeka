@@ -21,7 +21,6 @@ import {
   Statement,
   Var,
   While,
-  MoveForward,
 } from "./Statement";
 import { Token, TokenType } from "./Token";
 
@@ -98,7 +97,6 @@ export class Parser {
     if (this.match(TokenType.FOR)) return this.forStatement();
     if (this.match(TokenType.IF)) return this.ifStatement();
     if (this.match(TokenType.PRINT)) return this.printStatement();
-    if (this.match(TokenType.MOVE_FORWARD)) return this.moveForwardStatement();
     if (this.match(TokenType.RETURN)) return this.returnStatement();
     if (this.match(TokenType.WHILE)) return this.whileStatement();
     if (this.match(TokenType.LEFT_BRACE)) return new Block(this.block());
@@ -187,12 +185,6 @@ export class Parser {
   }
 
   private printStatement() {
-    const value = this.expression();
-    this.consume(TokenType.SEMICOLON, "Expects ';' after value.");
-    return new Print(value);
-  }
-
-  private moveForwardStatement() {
     const value = this.expression();
     this.consume(TokenType.SEMICOLON, "Expects ';' after value.");
     return new Print(value);

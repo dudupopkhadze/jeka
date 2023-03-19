@@ -14,18 +14,14 @@ export class Mustang {
     if (input) {
       const scanner = new Scanner(input);
       const tokens = scanner.scanTokens();
-      console.log(tokens);
 
       const parser = new Parser(tokens);
       const statements = parser.parse()!;
 
-      console.log(statements);
       if (Mustang.hadError) {
-        console.log("HAD ERROR");
         return;
       }
       if (Mustang.hadRuntimeError) {
-        console.log("HAD ERROR");
         return;
       }
 
@@ -33,7 +29,6 @@ export class Mustang {
       resolver.resolve(statements);
 
       if (Mustang.hadError) {
-        console.log("HAD ERROR");
         return;
       }
 

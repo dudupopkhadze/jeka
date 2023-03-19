@@ -18,7 +18,6 @@ import {
   Expr,
   Function,
   If,
-  MoveForward,
   Print,
   Return,
   Statement,
@@ -90,10 +89,6 @@ export class Resolver
   }
 
   visitPrintStatement(stmt: Print): void {
-    this.resolveSingleExpression(stmt.expression);
-  }
-
-  visitMoveForwardStatement(stmt: MoveForward): void {
     this.resolveSingleExpression(stmt.expression);
   }
 

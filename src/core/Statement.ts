@@ -14,7 +14,6 @@ export interface StatementVisitor<T> {
   visitWhileStatement(stmt: While): T;
   visitFunctionStatement(stmt: Function): T;
   visitReturnStatement(stmt: Return): T;
-  visitMoveForwardStatement(stmt: MoveForward): T;
 }
 
 export class Return extends Statement {
@@ -97,18 +96,6 @@ export class Print extends Statement {
 
   accept<T>(visitor: StatementVisitor<T>): T {
     return visitor.visitPrintStatement(this);
-  }
-}
-
-export class MoveForward extends Statement {
-  expression: Expression;
-  constructor(expression: Expression) {
-    super();
-    this.expression = expression;
-  }
-
-  accept<T>(visitor: StatementVisitor<T>): T {
-    return visitor.visitMoveForwardStatement(this);
   }
 }
 

@@ -18,7 +18,6 @@ import {
   Expr,
   Function,
   If,
-  MoveForward,
   Print,
   Return as ReturnStmt,
   Statement,
@@ -30,6 +29,34 @@ import { LiteralValue, Token, TokenType } from "./Token";
 import { Callable, CallableFunc } from "./Callable";
 import { Return } from "./Return";
 
+const defineJekaInstructions = (env: Environment) => {
+  env.define(
+    "moveForward",
+    new (class implements Callable {
+      arity(): number {
+        return 0;
+      }
+      call(): unknown {
+        console.log("moveForward");
+        return;
+      }
+    })()
+  );
+
+  env.define(
+    "turnLeft",
+    new (class implements Callable {
+      arity(): number {
+        return 0;
+      }
+      call(): unknown {
+        console.log("turnLeft");
+        return;
+      }
+    })()
+  );
+};
+
 export class Interpreter
   implements ExpressionVisitor<LiteralValue>, StatementVisitor<void>
 {
@@ -40,17 +67,7 @@ export class Interpreter
     this.global = new Environment();
     this.locals = {};
 
-    this.global.define(
-      "clock",
-      new (class implements Callable {
-        arity(): number {
-          return 0;
-        }
-        call(): unknown {
-          return Date.now();
-        }
-      })()
-    );
+    defineJekaInstructions(this.global);
     this.environment = this.global;
   }
 
@@ -174,10 +191,6 @@ export class Interpreter
   visitPrintStatement(stmt: Print): void {
     const value = this.evaluate(stmt.expression);
     console.log(this.stringify(value));
-  }
-
-  visitMoveForwardStatement(_: MoveForward): void {
-    console.log("move forwards");
   }
 
   visitLiteralExpr(expr: Literal): unknown {
