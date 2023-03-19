@@ -1,5 +1,4 @@
-import React from "react";
-import { Board, CodeInput, Header } from "./components";
+import { Board, CodeInput, Header, DelaySlider } from "./components";
 import {
   BoardControllerContextProvider,
   CodeControllerContextProvider,
@@ -14,6 +13,7 @@ function App() {
         <EngineContextProvider>
           <div className="App">
             <Header />
+            <DelaySlider />
             <div className="App-Container">
               <CodeInput />
               <Board />

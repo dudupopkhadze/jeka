@@ -1,0 +1,52 @@
+.Slider-Container {
+  width: 100%; /* Width of the outside container */
+  display: flex;
+  justify-content: center;
+  padding-top: 25px;
+  align-items: center;
+}
+
+/* The slider itself */
+.Slider {
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  width: 250px; /* Full-width */
+  height: 15px; /* Specified height */
+  background: #a3a9a4; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+  border-radius: 12.5px;
+}
+
+/* Mouse-over effects */
+.Slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.Slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 20px; /* Set a specific slider handle width */
+  height: 20px; /* Slider handle height */
+  border-radius: 12.5px;
+  background: #f89d0f; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.Slider::-moz-range-thumb {
+  width: 20px; /* Set a specific slider handle width */
+  height: 20px; /* Slider handle height */
+  background: #f89d0f; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.Slider-Value {
+  margin-left: 20px;
+  font-size: 25px;
+  font-weight: 600;
+  color: #f89d0f;
+  margin-right: 20px;
+}

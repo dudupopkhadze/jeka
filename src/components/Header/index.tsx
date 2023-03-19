@@ -9,7 +9,7 @@ import { useEngine } from "../../hooks/useEngine";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();
-  const { getEngine, error } = useEngine();
+  const { processInstructions, error, resetEngineState } = useEngine();
   const { boardController } = useBoardController();
 
   const handleRun = async () => {
@@ -30,8 +30,7 @@ export const Header: React.FC = () => {
         // JekaInstruction.MOVE_FORWARD,
       ];
 
-      const engine = getEngine();
-      engine.process(res);
+      processInstructions(res);
 
       // console.log(res?.result);
     } catch (error) {
@@ -52,7 +51,7 @@ export const Header: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            getEngine().process([JekaInstruction.MOVE_FORWARD], false);
+            processInstructions([JekaInstruction.MOVE_FORWARD], false);
           }}
           className="Header-Compile"
         >
@@ -61,19 +60,14 @@ export const Header: React.FC = () => {
         </button>
         <button
           onClick={() => {
-            getEngine().process([JekaInstruction.TURN_LEFT], false);
+            processInstructions([JekaInstruction.TURN_LEFT], false);
           }}
           className="Header-Compile"
         >
           <PlaySVG className="Header-Compile-Icon" />
           Turn
         </button>
-        <button
-          onClick={() => {
-            getEngine().reset();
-          }}
-          className="Header-Compile"
-        >
+        <button onClick={resetEngineState} className="Header-Compile">
           <PlaySVG className="Header-Compile-Icon" />
           Clear
         </button>

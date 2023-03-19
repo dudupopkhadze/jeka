@@ -5,6 +5,12 @@ export const CANVAS_WIDTH = 600;
 export const CANVAS_HEIGHT = 600;
 export const PADDING = 30;
 
+export enum Delay {
+  MIN = 10,
+  MAX = 1000,
+  DEFAULT = 500,
+}
+
 export const JekaSVG = `<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">

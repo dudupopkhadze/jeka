@@ -2,10 +2,21 @@ import React, { useCallback, useRef, useState } from "react";
 import { BoardController } from "../controllers";
 import { Engine } from "../engine";
 import { useBoardController } from "../hooks";
+import { JekaInstruction } from "../types";
 
-export const EngineContext = React.createContext<
-  { getEngine: () => Engine; error: string | null } | undefined
->(undefined);
+type IEngineContext = {
+  error: string | null;
+  processInstructions: (
+    instructions: JekaInstruction[],
+    reset?: boolean
+  ) => void;
+  setEngineProcessingDelay: (delay: number) => void;
+  resetEngineState: () => void;
+};
+
+export const EngineContext = React.createContext<IEngineContext | undefined>(
+  undefined
+);
 
 export const EngineContextProvider = ({
   children,
@@ -16,10 +27,30 @@ export const EngineContextProvider = ({
   const { boardController } = useBoardController();
   const ref = useRef(new Engine(boardController, setError));
 
-  const getEngine = useCallback(() => ref.current, []);
+  const setEngineProcessingDelay = useCallback((delay: number) => {
+    ref.current.setDelay(delay);
+  }, []);
+
+  const processInstructions = useCallback(
+    (instructions: JekaInstruction[], reset?: boolean) => {
+      ref.current.process(instructions);
+    },
+    []
+  );
+
+  const resetEngineState = useCallback(() => {
+    ref.current.reset();
+  }, []);
 
   return (
-    <EngineContext.Provider value={{ getEngine, error }}>
+    <EngineContext.Provider
+      value={{
+        error,
+        processInstructions,
+        setEngineProcessingDelay,
+        resetEngineState,
+      }}
+    >
       {children}
     </EngineContext.Provider>
   );

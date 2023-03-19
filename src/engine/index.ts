@@ -44,6 +44,10 @@ export class Engine {
     this.prepareForExecution();
   }
 
+  setDelay(delay: number) {
+    this.delay = delay;
+  }
+
   private prepareForExecution() {
     this.boardController.clearJekaCoordinates();
     this.boardController.clearBoard();
