@@ -4,15 +4,16 @@ Jeka is project inspired by Karel.
 
 Karel is an educational programming language for beginners, created  by Richard E. Pattis in his book Karel The Robot: A Gentle Introduction to the Art of Programming.
 
-<img width="198" alt="Screenshot 2023-03-20 at 00 45 53" src="https://user-images.githubusercontent.com/48488310/226207949-e9bc68ec-3daf-43cd-955f-4637039ad1a2.png">
+![android-chrome-512x512](https://user-images.githubusercontent.com/48488310/226406995-daf88184-939f-4213-99af-aa2d7140f3ba.png)
 
 ## What is Jeka
 
 Jeka is simple robot named Karel that lives in an environment consisting of a grid of streets (left-right) and avenues (up-down). Jeka understands  basic instructions:
-- `moveForward` (jeka moves by one square in the direction he is facing), 
-- `turnLeft` (Jeka turns 90 ° left),
-- `putBeeper` (Jeka puts a beeper on the square he is standing at) ( -- coming soon), 
-- `pickBeeper` ( -- coming soon)
+- `moveForward`: Jeka moves by one square in the direction he is facing 
+- `turnLeft`: Jeka turns 90 ° left
+-  `woof`: Jeka barks at yout (friendly)
+- `putBeeper`: Jeka puts a beeper on the square he is standing at ( -- coming soon),
+- `pickBeeper`: Jeka piack a beeper from the square he is standing at ( -- coming soon)
 
 
 
