@@ -46,6 +46,11 @@ export class Mustang {
     }
   }
 
+  public clearState() {
+    Mustang.hadError = false;
+    Mustang.hadRuntimeError = false;
+  }
+
   static runtimeError(error: RuntimeError) {
     console.log(error.message + "\n[line " + error.token.line + "]");
     Mustang.onError(error.message + "\n[line " + error.token.line + "]");
