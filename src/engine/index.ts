@@ -3,6 +3,7 @@ import { Mustang } from "../core";
 import { Callable } from "../core/Callable";
 import { Environment } from "../core/Environment";
 import { JekaFacing, JekaInstruction } from "../types";
+import { generateRandomId } from "../utils";
 
 type ErrorHandler = (error: string | null) => void;
 export class Engine {
@@ -11,7 +12,7 @@ export class Engine {
   private delay: number;
   private error: string | null = null;
   private onError: ErrorHandler;
-  private timeouts: NodeJS.Timeout[] = [];
+  private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
 
   constructor(
     boardController: BoardController,
@@ -30,18 +31,7 @@ export class Engine {
         return 0;
       },
       call: () => {
-        new Promise((resolve) => {
-          console.log(this.delay);
-          this.timeouts.push(
-            setTimeout(() => {
-              if (this.error) {
-                return resolve(null);
-              }
-              this.processSingleInstruction(JekaInstruction.MOVE_FORWARD);
-              resolve(null);
-            }, this.delay * this.timeouts.length)
-          );
-        });
+        this.delayedProcessSingleInstruction(JekaInstruction.MOVE_FORWARD);
       },
     });
 
@@ -50,7 +40,7 @@ export class Engine {
         return 0;
       },
       call: () => {
-        this.processSingleInstruction(JekaInstruction.TURN_LEFT);
+        this.delayedProcessSingleInstruction(JekaInstruction.TURN_LEFT);
       },
     });
   }
@@ -66,17 +56,7 @@ export class Engine {
 
     for (let i = 0; i < instructions.length; i++) {
       const instruction = instructions[i];
-      await new Promise((resolve) => {
-        this.timeouts.push(
-          setTimeout(() => {
-            if (this.error) {
-              return resolve(null);
-            }
-            this.processSingleInstruction(instruction);
-            resolve(null);
-          }, this.delay * i)
-        );
-      });
+      this.delayedProcessSingleInstruction(instruction);
     }
   }
 
@@ -94,8 +74,9 @@ export class Engine {
     this.boardController.drawWorld();
     this.boardController.drawJekaOnStart();
     this.clearErrorState();
+    this.mustang.clearState();
     if (this.timeouts.length) {
-      this.timeouts.forEach((timeout) => clearTimeout(timeout));
+      this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
       this.timeouts = [];
     }
   }
@@ -107,12 +88,30 @@ export class Engine {
 
   private handleError(error: string) {
     this.setErrorState(error);
-    this.timeouts.forEach((timeout) => clearTimeout(timeout));
+    this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
+    this.timeouts = [];
   }
 
   private clearErrorState() {
     this.error = null;
     this.onError(null);
+  }
+
+  private delayedProcessSingleInstruction(instruction: JekaInstruction) {
+    new Promise((resolve) => {
+      const id = generateRandomId();
+      this.timeouts.push({
+        id,
+        timeout: setTimeout(() => {
+          if (this.error) {
+            return resolve(null);
+          }
+          this.processSingleInstruction(instruction);
+          this.timeouts = this.timeouts.filter((t) => t.id !== id);
+          resolve(null);
+        }, this.delay * this.timeouts.length),
+      });
+    });
   }
 
   private processSingleInstruction(instruction: JekaInstruction) {

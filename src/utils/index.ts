@@ -69,3 +69,15 @@ export const angleToJekaFacingWithCurrentFacing = (
   const newAngle = currentAngle + angle;
   return newAngle;
 };
+
+export const generateString = (length: number, alphabet: string) => {
+  let result = "";
+  for (let i = length; i > 0; --i)
+    result += alphabet[Math.floor(Math.random() * alphabet.length)] as string;
+  return result;
+};
+export const generateRandomId = () =>
+  generateString(
+    12,
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  );
