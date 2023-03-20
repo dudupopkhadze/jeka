@@ -1,3 +1,5 @@
+import { AvailableAudio } from "../types";
+
 export const CIRCLE_RADIUS = 5;
 export const CIRCLE_DIAMETER = 2 * CIRCLE_RADIUS;
 export const JEKA_SIZE = 50;
@@ -10,6 +12,14 @@ export enum Delay {
   MAX = 1000,
   DEFAULT = 500,
 }
+
+export const AudioLocations = [
+  {
+    name: "woof",
+    value: AvailableAudio.WOOF,
+    location: "../assets/woof/sound.mp3",
+  },
+];
 
 export const JekaSVG = `<?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"

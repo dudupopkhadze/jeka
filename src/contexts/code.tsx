@@ -33,8 +33,9 @@ export const CodeControllerContextProvider = ({
       doc: `// available commands
 // moveForward - jeka goes forward
 // turnLeft - jeka turns left
+// woof - jeka barks
 // also available are: if/else branching, while/for loops, functions and variables
-// e.g moveForward(); or turnLeft();
+// e.g moveForward(); or turnLeft(); woof();
 // function turnRight(){
 //   turnLeft();
 //   turnLeft();
