@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 module.exports = {
   entry: "./src/index.tsx",
@@ -32,6 +33,10 @@ module.exports = {
         test: /\.svg$/,
         use: ["@svgr/webpack", "url-loader"],
       },
+      {
+        test: /\.mp3$/,
+        use: "file-loader",
+      },
     ],
   },
   plugins: [
@@ -39,5 +44,6 @@ module.exports = {
       template: path.join(__dirname, "/public/index.html"),
       favicon: path.join(__dirname, "/public/favicon.ico"),
     }),
+    new CopyWebpackPlugin({ patterns: [{ from: "src/assets", to: "assets" }] }),
   ],
 };

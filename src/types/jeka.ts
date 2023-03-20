@@ -1,6 +1,7 @@
 export enum JekaInstruction {
   TURN_LEFT = "turnLeft",
   MOVE_FORWARD = "moveForward",
+  WOOF = "woof",
 }
 
 export enum JekaFacing {

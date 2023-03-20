@@ -1,14 +1,15 @@
 import { BoardController } from "../controllers";
 import { Mustang } from "../core";
-import { Callable } from "../core/Callable";
 import { Environment } from "../core/Environment";
-import { JekaFacing, JekaInstruction } from "../types";
+import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
 import { generateRandomId } from "../utils";
+import { AudioManager } from "./AudioManager";
 
 type ErrorHandler = (error: string | null) => void;
 export class Engine {
   private mustang: Mustang;
   private boardController: BoardController;
+  private audioManager: AudioManager;
   private delay: number;
   private error: string | null = null;
   private onError: ErrorHandler;
@@ -19,6 +20,7 @@ export class Engine {
     onError: ErrorHandler,
     delay?: number
   ) {
+    this.audioManager = new AudioManager();
     this.mustang = new Mustang(this.initJekaEnvironment.bind(this), onError);
     this.boardController = boardController;
     this.delay = delay || 500;
@@ -26,6 +28,15 @@ export class Engine {
   }
 
   private initJekaEnvironment(env: Environment) {
+    env.define(JekaInstruction.WOOF, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.delayedProcessSingleInstruction(JekaInstruction.WOOF);
+      },
+    });
+
     env.define(JekaInstruction.MOVE_FORWARD, {
       arity: () => {
         return 0;
@@ -122,10 +133,17 @@ export class Engine {
       case JekaInstruction.TURN_LEFT:
         this.processTurnLeft();
         break;
+      case JekaInstruction.WOOF:
+        this.processWoof();
+        break;
 
       default:
         break;
     }
+  }
+
+  private processWoof() {
+    this.audioManager.play(AvailableAudio.WOOF);
   }
 
   private getJekaNewRowForFacing(facing: JekaFacing) {
