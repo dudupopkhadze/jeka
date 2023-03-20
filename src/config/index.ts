@@ -17,7 +17,7 @@ export const AudioLocations = [
   {
     name: "woof",
     value: AvailableAudio.WOOF,
-    location: "../assets/woof/sound.mp3",
+    location: "assets/woof/sound.mp3",
   },
 ];
 
