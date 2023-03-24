@@ -28,6 +28,7 @@ export class Engine {
   }
 
   private initJekaEnvironment(env: Environment) {
+    let called = false;
     env.define(JekaInstruction.WOOF, {
       arity: () => {
         return 0;
@@ -52,6 +53,19 @@ export class Engine {
       },
       call: () => {
         this.delayedProcessSingleInstruction(JekaInstruction.TURN_LEFT);
+      },
+    });
+
+    env.define(JekaInstruction.FRONT_IS_CLEAR, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        if (called) return;
+        const { isValid } = this.canJekaMoveForward();
+        console.log("isValid", isValid);
+        called = true;
+        return isValid;
       },
     });
   }
@@ -172,12 +186,18 @@ export class Engine {
     }
   }
 
-  private processMoveForward() {
+  private canJekaMoveForward() {
     const { row, column, facing } = this.boardController.getJekaCoordinates();
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
     const isValid = this.boardController.validateJekaMove(newRow, newColumn);
+    return { newRow, newColumn, isValid };
+  }
+
+  private processMoveForward() {
+    const { isValid, newRow, newColumn } = this.canJekaMoveForward();
+
     if (!isValid) {
       return this.handleError("Jeka cannot move forward");
     }

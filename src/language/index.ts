@@ -49,6 +49,7 @@ export const jekaAutoComplete = JekaLanguageDefined.data.of({
     { label: "turnLeft", type: "keyword", info: "turnLeft()" },
     { label: "moveForward", type: "keyword", info: "moveForward()" },
     { label: "woof", type: "keyword", info: "woof()" },
+    { label: "frontIsClear", type: "keyword", info: "frontIsClear()" },
     { label: "while", type: "keyword", info: "while (condition) { }" },
     { label: "for", type: "keyword", info: "for (var i = 0; i < 10; i++) { }" },
     { label: "if", type: "keyword", info: "if (condition) { }" },
