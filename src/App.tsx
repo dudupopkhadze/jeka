@@ -6,7 +6,7 @@ import {
   Configuration,
 } from "./components";
 import {
-  BoardControllerContextProvider,
+  BoardContextProvider,
   CodeControllerContextProvider,
   EngineContextProvider,
 } from "./contexts";
@@ -15,7 +15,7 @@ import "./styles/App.css";
 function App() {
   return (
     <CodeControllerContextProvider>
-      <BoardControllerContextProvider>
+      <BoardContextProvider>
         <EngineContextProvider>
           <div className="App">
             <Header />
@@ -26,7 +26,7 @@ function App() {
             </div>
           </div>
         </EngineContextProvider>
-      </BoardControllerContextProvider>
+      </BoardContextProvider>
     </CodeControllerContextProvider>
   );
 }

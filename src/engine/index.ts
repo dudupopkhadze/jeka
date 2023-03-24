@@ -1,4 +1,4 @@
-import { BoardController } from "../controllers";
+import { Board } from "../board";
 import { Mustang } from "../mustang";
 import { Environment } from "../mustang/Environment";
 import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
@@ -8,21 +8,17 @@ import { AudioManager } from "./AudioManager";
 type ErrorHandler = (error: string | null) => void;
 export class Engine {
   private mustang: Mustang;
-  private boardController: BoardController;
+  private board: Board;
   private audioManager: AudioManager;
   private delay: number;
   private error: string | null = null;
   private onError: ErrorHandler;
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
 
-  constructor(
-    boardController: BoardController,
-    onError: ErrorHandler,
-    delay?: number
-  ) {
+  constructor(board: Board, onError: ErrorHandler, delay?: number) {
     this.audioManager = new AudioManager();
     this.mustang = new Mustang(this.initJekaEnvironment.bind(this), onError);
-    this.boardController = boardController;
+    this.board = board;
     this.delay = delay || 500;
     this.onError = onError;
   }
@@ -94,10 +90,10 @@ export class Engine {
   }
 
   private prepareForExecution() {
-    this.boardController.clearJekaCoordinates();
-    this.boardController.clearBoard();
-    this.boardController.drawWorld();
-    this.boardController.drawJekaOnStart();
+    this.board.clearJekaCoordinates();
+    this.board.clearBoard();
+    this.board.drawWorld();
+    this.board.drawJekaOnStart();
     this.clearErrorState();
     this.mustang.clearState();
     if (this.timeouts.length) {
@@ -187,11 +183,11 @@ export class Engine {
   }
 
   private canJekaMoveForward() {
-    const { row, column, facing } = this.boardController.getJekaCoordinates();
+    const { row, column, facing } = this.board.getJekaCoordinates();
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
-    const isValid = this.boardController.validateJekaMove(newRow, newColumn);
+    const isValid = this.board.validateJekaMove(newRow, newColumn);
     return { newRow, newColumn, isValid };
   }
 
@@ -202,13 +198,13 @@ export class Engine {
       return this.handleError("Jeka cannot move forward");
     }
 
-    this.boardController.drawJekaWithBoardPosition(newRow, newColumn);
+    this.board.drawJekaWithBoardPosition(newRow, newColumn);
   }
 
   private processTurnLeft() {
-    const jekaPosition = this.boardController.getJekaCoordinates();
+    const jekaPosition = this.board.getJekaCoordinates();
 
-    this.boardController.drawJekaWithBoardPosition(
+    this.board.drawJekaWithBoardPosition(
       jekaPosition.row,
       jekaPosition.column,
       -Math.PI / 2

@@ -7,12 +7,12 @@ import {
   CIRCLE_RADIUS,
   JekaSVG,
 } from "../config";
-import { Board, BoardConfig, JekaFacing } from "../types";
+import { BoardConfig, JekaFacing } from "../types";
 import { angleToJekaFacing, jekaFacingToAngle } from "../utils";
 
-export class BoardController {
+export class Board {
   private canvas?: HTMLCanvasElement;
-  private board: Board;
+  private boardConfig: BoardConfig;
   private jeka?: HTMLImageElement;
   private isWordInitialized = false;
   private jekaCoordinates = {
@@ -25,7 +25,7 @@ export class BoardController {
   private jekaImageIsLoaded = false;
 
   constructor(boardConfig: BoardConfig) {
-    this.board = boardConfig;
+    this.boardConfig = boardConfig;
     this.jeka = new Image();
 
     const svg64 = btoa(JekaSVG);
@@ -37,11 +37,14 @@ export class BoardController {
     };
     this.jeka.onload = () => {
       this.jekaImageIsLoaded = true;
+      this.clearBoard();
+      this.drawWorld();
+      this.drawJekaOnStart();
     };
   }
 
   setBoard(board: BoardConfig) {
-    this.board = board;
+    this.boardConfig = board;
   }
 
   registerCanvas(canvas: HTMLCanvasElement) {
@@ -57,8 +60,8 @@ export class BoardController {
   }
 
   validateJekaMove(nextRow: number, nextColumn: number) {
-    if (nextRow < 0 || nextRow >= this.board.rows) return false;
-    if (nextColumn < 0 || nextColumn >= this.board.columns) return false;
+    if (nextRow < 0 || nextRow >= this.boardConfig.rows) return false;
+    if (nextColumn < 0 || nextColumn >= this.boardConfig.columns) return false;
     return true;
   }
 
@@ -116,11 +119,12 @@ export class BoardController {
   }
 
   drawWorld() {
+    console.log(this.jekaImageIsLoaded);
     if (!this.jekaImageIsLoaded) return;
     const context = this.getContext();
 
-    for (let i = 0; i < this.board.rows; i++) {
-      for (let j = 0; j < this.board.columns; j++) {
+    for (let i = 0; i < this.boardConfig.rows; i++) {
+      for (let j = 0; j < this.boardConfig.columns; j++) {
         context.beginPath();
         const { x, y } = this.getBoardCellCoordinates(i, j);
         context.arc(x, y, CIRCLE_RADIUS, 0, Math.PI * 2, true);
@@ -132,7 +136,7 @@ export class BoardController {
   }
 
   drawJekaOnStart() {
-    this.drawJekaWithBoardPosition(0, this.board.columns - 1);
+    this.drawJekaWithBoardPosition(0, this.boardConfig.columns - 1);
   }
 
   private getContext() {
@@ -142,7 +146,7 @@ export class BoardController {
   }
 
   private getBoardCellCoordinates(row: number, column: number) {
-    const { rows, columns } = this.board;
+    const { rows, columns } = this.boardConfig;
 
     const dx = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (rows - 1);
     const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (columns - 1);

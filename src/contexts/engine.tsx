@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { Engine } from "../engine";
-import { useBoardController } from "../hooks";
+import { useBoard } from "../hooks";
 import { JekaInstruction } from "../types";
 
 type IEngineContext = {
@@ -24,8 +24,8 @@ export const EngineContextProvider = ({
   children: React.ReactElement;
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const { boardController } = useBoardController();
-  const ref = useRef(new Engine(boardController, setError));
+  const { board } = useBoard();
+  const ref = useRef(new Engine(board, setError));
 
   const setEngineProcessingDelay = useCallback((delay: number) => {
     ref.current.setDelay(delay);
