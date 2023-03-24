@@ -39,7 +39,15 @@ export const CodeControllerContextProvider = ({
 // function turnRight(){
 //   turnLeft();
 //   turnLeft();
-//}\n`,
+//}
+moveForward();
+moveForward();
+moveForward();
+moveForward();
+moveForward();
+moveForward();
+
+\n`,
       extensions: [
         basicSetup,
         JekaLanguage(),

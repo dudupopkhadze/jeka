@@ -25,26 +25,38 @@ export const EngineContextProvider = ({
 }) => {
   const [error, setError] = useState<string | null>(null);
   const { board } = useBoard();
-  const ref = useRef(new Engine(board, setError));
+  const [engine] = useState(
+    () =>
+      new Engine({
+        board,
+        onError: setError,
+      })
+  );
 
-  const setEngineProcessingDelay = useCallback((delay: number) => {
-    ref.current.setDelay(delay);
-  }, []);
+  const setEngineProcessingDelay = useCallback(
+    (delay: number) => {
+      engine.setDelay(delay);
+    },
+    [engine]
+  );
 
   const processDirectInstructions = useCallback(
     (instructions: JekaInstruction[], reset?: boolean) => {
-      ref.current.processDirect(instructions, reset);
+      engine.processDirect(instructions, reset);
     },
-    []
+    [engine]
   );
 
-  const processInput = useCallback((input: string) => {
-    ref.current.process(input);
-  }, []);
+  const processInput = useCallback(
+    (input: string) => {
+      engine.process(input);
+    },
+    [engine]
+  );
 
   const resetEngineState = useCallback(() => {
-    ref.current.reset();
-  }, []);
+    engine.reset();
+  }, [engine]);
 
   return (
     <EngineContext.Provider

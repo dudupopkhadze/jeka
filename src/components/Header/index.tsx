@@ -4,7 +4,6 @@ import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
 import { useCodeController } from "../../hooks";
 import { JekaInstruction } from "../../types";
 import { useEngine } from "../../hooks/useEngine";
-import { Mustang } from "../../mustang";
 
 export const Header: React.FC = () => {
   const { value } = useCodeController();

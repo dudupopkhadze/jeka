@@ -16,9 +16,6 @@ export const Board = () => {
 
   useEffect(() => {
     if (!registered) return;
-    console.log("HERE");
-    board.drawWorld();
-    board.drawJekaOnStart();
   }, [registered]);
 
   return (

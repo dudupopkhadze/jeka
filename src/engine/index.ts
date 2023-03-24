@@ -2,10 +2,22 @@ import { Board } from "../board";
 import { Mustang } from "../mustang";
 import { Environment } from "../mustang/Environment";
 import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
-import { generateRandomId } from "../utils";
+import {
+  angleToJekaFacing,
+  generateRandomId,
+  jekaFacingToAngle,
+} from "../utils";
 import { AudioManager } from "./AudioManager";
+import { Jeka } from "./Jeka";
 
 type ErrorHandler = (error: string | null) => void;
+
+interface Config {
+  board: Board;
+  onError: ErrorHandler;
+  delay?: number;
+}
+
 export class Engine {
   private mustang: Mustang;
   private board: Board;
@@ -14,17 +26,41 @@ export class Engine {
   private error: string | null = null;
   private onError: ErrorHandler;
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
+  private jeka: Jeka;
+  private jekaCallbackFired = false;
 
-  constructor(board: Board, onError: ErrorHandler, delay?: number) {
+  constructor(config: Config) {
     this.audioManager = new AudioManager();
-    this.mustang = new Mustang(this.initJekaEnvironment.bind(this), onError);
-    this.board = board;
-    this.delay = delay || 500;
-    this.onError = onError;
+    this.mustang = new Mustang(
+      this.initJekaEnvironment.bind(this),
+      config.onError
+    );
+    this.board = config.board;
+    this.delay = config.delay || 500;
+    this.onError = config.onError;
+
+    this.jeka = new Jeka({
+      onLoad: this.onJekaLoad.bind(this),
+      onError: () => {
+        this.onError("Jeka failed to load, refresh the page");
+      },
+      startAt: {
+        row: 0,
+        column: this.board.getBoardConfig().columns - 1,
+      },
+    });
+
+    this.board.setJeka(this.jeka);
   }
 
+  private onJekaLoad = () => {
+    if (this.jekaCallbackFired) return;
+
+    this.jekaCallbackFired = true;
+    this.prepareForExecution();
+  };
+
   private initJekaEnvironment(env: Environment) {
-    let called = false;
     env.define(JekaInstruction.WOOF, {
       arity: () => {
         return 0;
@@ -57,10 +93,8 @@ export class Engine {
         return 0;
       },
       call: () => {
-        if (called) return;
         const { isValid } = this.canJekaMoveForward();
-        console.log("isValid", isValid);
-        called = true;
+
         return isValid;
       },
     });
@@ -68,6 +102,7 @@ export class Engine {
 
   async process(input: string) {
     this.prepareForExecution();
+
     this.mustang.run(input);
   }
 
@@ -90,10 +125,10 @@ export class Engine {
   }
 
   private prepareForExecution() {
-    this.board.clearJekaCoordinates();
+    this.jeka.resetCoordinates();
     this.board.clearBoard();
     this.board.drawWorld();
-    this.board.drawJekaOnStart();
+    this.board.drawJekaWithBoardPosition();
     this.clearErrorState();
     this.mustang.clearState();
     if (this.timeouts.length) {
@@ -108,12 +143,13 @@ export class Engine {
   }
 
   private handleError(error: string) {
-    this.setErrorState(error);
     this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
     this.timeouts = [];
+    this.setErrorState(error);
   }
 
   private clearErrorState() {
+    if (!this.error) return;
     this.error = null;
     this.onError(null);
   }
@@ -183,7 +219,7 @@ export class Engine {
   }
 
   private canJekaMoveForward() {
-    const { row, column, facing } = this.board.getJekaCoordinates();
+    const { row, column, facing } = this.jeka.boardCoordinates;
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
@@ -198,16 +234,24 @@ export class Engine {
       return this.handleError("Jeka cannot move forward");
     }
 
-    this.board.drawJekaWithBoardPosition(newRow, newColumn);
+    this.jeka.boardCoordinates = {
+      ...this.jeka.boardCoordinates,
+      row: newRow,
+      column: newColumn,
+    };
+
+    this.board.drawJekaWithBoardPosition();
   }
 
   private processTurnLeft() {
-    const jekaPosition = this.board.getJekaCoordinates();
+    const jekaPosition = this.jeka.boardCoordinates;
+    this.jeka.boardCoordinates = {
+      ...jekaPosition,
+      facing: angleToJekaFacing(
+        jekaFacingToAngle(jekaPosition.facing) - Math.PI / 2
+      ),
+    };
 
-    this.board.drawJekaWithBoardPosition(
-      jekaPosition.row,
-      jekaPosition.column,
-      -Math.PI / 2
-    );
+    this.board.drawJekaWithBoardPosition();
   }
 }

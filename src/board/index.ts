@@ -3,56 +3,37 @@ import {
   CIRCLE_DIAMETER,
   PADDING,
   CANVAS_HEIGHT,
-  JEKA_SIZE,
   CIRCLE_RADIUS,
-  JekaSVG,
 } from "../config";
-import { BoardConfig, JekaFacing } from "../types";
-import { angleToJekaFacing, jekaFacingToAngle } from "../utils";
+import { Jeka } from "../engine/Jeka";
+import { BoardConfig } from "../types";
+import { jekaFacingToAngle } from "../utils";
 
 export class Board {
   private canvas?: HTMLCanvasElement;
   private boardConfig: BoardConfig;
-  private jeka?: HTMLImageElement;
+  private jeka?: Jeka;
   private isWordInitialized = false;
-  private jekaCoordinates = {
-    x: 0,
-    y: 0,
-    row: 0,
-    column: 0,
-    facing: JekaFacing.EAST,
-  };
-  private jekaImageIsLoaded = false;
 
   constructor(boardConfig: BoardConfig) {
     this.boardConfig = boardConfig;
-    this.jeka = new Image();
-
-    const svg64 = btoa(JekaSVG);
-    const b64Start = "data:image/svg+xml;base64,";
-    const image64 = b64Start + svg64;
-    this.jeka.src = image64;
-    this.jeka.onerror = () => {
-      alert("load error");
-    };
-    this.jeka.onload = () => {
-      this.jekaImageIsLoaded = true;
-      this.clearBoard();
-      this.drawWorld();
-      this.drawJekaOnStart();
-    };
   }
+
+  setJeka = (jeka: Jeka) => {
+    this.jeka = jeka;
+  };
 
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
+    if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
+  }
+
+  getBoardConfig() {
+    return this.boardConfig;
   }
 
   registerCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
-  }
-
-  getJekaCoordinates() {
-    return this.jekaCoordinates;
   }
 
   isWorldInitialized() {
@@ -65,11 +46,14 @@ export class Board {
     return true;
   }
 
-  drawJekaWithBoardPosition(row: number, column: number, angle?: number) {
+  drawJekaWithBoardPosition() {
+    if (!this.jeka) return;
     if (this.isWordInitialized) {
       this.clearBoard();
       this.drawWorld();
     }
+
+    const { row, column, facing } = this.jeka.boardCoordinates;
 
     const { x, y } = this.getJekaCoordinatesForRowAndColumn(row, column);
 
@@ -78,25 +62,15 @@ export class Board {
 
     //handle what position jeka is facing
 
-    ctx.translate(x + JEKA_SIZE / 2, y + JEKA_SIZE / 2);
-    const newAngle = angle
-      ? this.calculateNewJekaAngle(angle)
-      : jekaFacingToAngle(this.jekaCoordinates.facing);
+    ctx.translate(x + this.jeka.size / 2, y + this.jeka.size / 2);
+    const newAngle = jekaFacingToAngle(facing);
 
     ctx.rotate(newAngle);
-    ctx.translate(-x - JEKA_SIZE / 2, -y - JEKA_SIZE / 2);
-
-    this.jekaCoordinates = {
-      x,
-      y,
-      row,
-      column,
-      facing: angleToJekaFacing(newAngle),
-    };
+    ctx.translate(-x - this.jeka.size / 2, -y - this.jeka.size / 2);
 
     // draw the image
     // since the ctx is rotated, the image will be rotated also
-    ctx.drawImage(this.jeka!, x, y);
+    ctx.drawImage(this.jeka.svg, x, y);
 
     // we’re done with the rotating so restore the unrotated ctx
     ctx.restore();
@@ -108,19 +82,9 @@ export class Board {
     this.isWordInitialized = false;
   }
 
-  clearJekaCoordinates() {
-    this.jekaCoordinates = {
-      x: 0,
-      y: 0,
-      row: 0,
-      column: 0,
-      facing: JekaFacing.EAST,
-    };
-  }
-
   drawWorld() {
-    console.log(this.jekaImageIsLoaded);
-    if (!this.jekaImageIsLoaded) return;
+    if (!this.jeka?.jekaSvgIsLoaded) return;
+
     const context = this.getContext();
 
     for (let i = 0; i < this.boardConfig.rows; i++) {
@@ -133,10 +97,6 @@ export class Board {
     }
 
     this.isWordInitialized = true;
-  }
-
-  drawJekaOnStart() {
-    this.drawJekaWithBoardPosition(0, this.boardConfig.columns - 1);
   }
 
   private getContext() {
@@ -168,12 +128,6 @@ export class Board {
 
   private getJekaCoordinatesForRowAndColumn = (row: number, column: number) => {
     const { x, y } = this.getBoardCellCoordinates(row, column);
-    return { x: x - JEKA_SIZE / 2, y: y - JEKA_SIZE / 2 };
+    return { x: x - this.jeka!.size / 2, y: y - this.jeka!.size / 2 };
   };
-
-  private calculateNewJekaAngle(angle: number) {
-    const curAngle = jekaFacingToAngle(this.jekaCoordinates.facing);
-    const newAngle = curAngle + angle;
-    return newAngle;
-  }
 }
