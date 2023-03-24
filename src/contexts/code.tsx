@@ -1,6 +1,7 @@
 import { EditorState } from "@codemirror/state";
 import { basicSetup, EditorView } from "codemirror";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { EditorStartingCode } from "../config";
 import { JekaLanguage } from "../language";
 
 interface ICodeControllerContext {
@@ -30,22 +31,7 @@ export const CodeControllerContextProvider = ({
     if (!element) return;
 
     const state = EditorState.create({
-      doc: `// available commands
-// moveForward - jeka goes forward
-// turnLeft - jeka turns left
-// woof - jeka barks back at you (because he's a dog ofc)
-// also available are: if/else branching, while/for loops, functions and variables
-// e.g moveForward(); or turnLeft(); woof();
-// function turnRight(){
-//   turnLeft();
-//   turnLeft();
-//}
-
-while(frontIsClear()){
-  moveForward();
-}
-
-\n`,
+      doc: EditorStartingCode,
       extensions: [
         basicSetup,
         JekaLanguage(),

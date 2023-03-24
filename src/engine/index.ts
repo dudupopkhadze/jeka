@@ -1,4 +1,5 @@
 import { Board } from "../board";
+import { MAX_WHILE_LOOP } from "../config";
 import { Mustang } from "../mustang";
 import { Environment } from "../mustang/Environment";
 import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
@@ -94,14 +95,13 @@ export class Engine {
         return 0;
       },
       call: () => {
-        if (this.frontIsClearCalledTimes > 1000) {
+        //ideally we should determine this in real time according to input
+        if (this.frontIsClearCalledTimes > MAX_WHILE_LOOP) {
           this.setErrorState("Possible infinite loop detected");
           return;
         }
         this.frontIsClearCalledTimes++;
         const { isValid } = this.canJekaMoveForwardRealTime();
-
-        console.log({ isValid });
 
         return isValid;
       },
