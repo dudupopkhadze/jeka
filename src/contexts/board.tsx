@@ -25,7 +25,9 @@ export const BoardControllerContextProvider = ({
   const [boardSize, setBoardSize] =
     useState<BoardSizeLabel>(StartingBoardLabel);
 
-  const updateBoardConfig = useCallback((label: BoardSizeLabel) => {}, []);
+  const updateBoardConfig = useCallback((label: BoardSizeLabel) => {
+    setBoardSize(label);
+  }, []);
 
   return (
     <BoardControllerContext.Provider
