@@ -47,6 +47,12 @@ while(i < 5){
   i = i + 1;
 }
 
+while(frontIsClear()){
+  moveForward();
+}
+
+turnRight();
+
 ```
 
 ## Running Locally
