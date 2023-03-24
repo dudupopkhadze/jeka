@@ -8,7 +8,7 @@ Karel is an educational programming language for beginners, created  by Richard 
 
 ## What is Jeka
 
-Jeka is simple robot named Karel that lives in an environment consisting of a grid of streets (left-right) and avenues (up-down). Jeka understands  basic instructions:
+Jeka is friendly dog that lives in an environment consisting of a grid of streets (left-right) and avenues (up-down). Jeka understands  basic instructions:
 - `moveForward`: Jeka moves by one square in the direction he is facing 
 - `turnLeft`: Jeka turns 90 ° left
 -  `woof`: Jeka barks at yout (friendly)
