@@ -1,31 +1,66 @@
-import { BoardController } from "../controllers";
+import { Board } from "../board";
+import { MAX_WHILE_LOOP } from "../config";
 import { Mustang } from "../mustang";
 import { Environment } from "../mustang/Environment";
 import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
-import { generateRandomId } from "../utils";
+import {
+  angleToJekaFacing,
+  generateRandomId,
+  jekaFacingToAngle,
+} from "../utils";
 import { AudioManager } from "./AudioManager";
+import { Jeka } from "./Jeka";
 
 type ErrorHandler = (error: string | null) => void;
+
+interface Config {
+  board: Board;
+  onError: ErrorHandler;
+  delay?: number;
+}
+
 export class Engine {
   private mustang: Mustang;
-  private boardController: BoardController;
+  private board: Board;
   private audioManager: AudioManager;
   private delay: number;
   private error: string | null = null;
   private onError: ErrorHandler;
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
+  private jeka: Jeka;
+  private jekaCallbackFired = false;
+  private frontIsClearCalledTimes = 0;
 
-  constructor(
-    boardController: BoardController,
-    onError: ErrorHandler,
-    delay?: number
-  ) {
+  constructor(config: Config) {
     this.audioManager = new AudioManager();
-    this.mustang = new Mustang(this.initJekaEnvironment.bind(this), onError);
-    this.boardController = boardController;
-    this.delay = delay || 500;
-    this.onError = onError;
+    this.mustang = new Mustang(
+      this.initJekaEnvironment.bind(this),
+      config.onError
+    );
+    this.board = config.board;
+    this.delay = config.delay || 500;
+    this.onError = config.onError;
+
+    this.jeka = new Jeka({
+      onLoad: this.onJekaLoad.bind(this),
+      onError: () => {
+        this.onError("Jeka failed to load, refresh the page");
+      },
+      startAt: {
+        row: 0,
+        column: this.board.getBoardConfig().columns - 1,
+      },
+    });
+
+    this.board.setJeka(this.jeka);
   }
+
+  private onJekaLoad = () => {
+    if (this.jekaCallbackFired) return;
+
+    this.jekaCallbackFired = true;
+    this.prepareForExecution();
+  };
 
   private initJekaEnvironment(env: Environment) {
     env.define(JekaInstruction.WOOF, {
@@ -54,10 +89,28 @@ export class Engine {
         this.delayedProcessSingleInstruction(JekaInstruction.TURN_LEFT);
       },
     });
+
+    env.define(JekaInstruction.FRONT_IS_CLEAR, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        //ideally we should determine this in real time according to input
+        if (this.frontIsClearCalledTimes > MAX_WHILE_LOOP) {
+          this.setErrorState("Possible infinite loop detected");
+          return;
+        }
+        this.frontIsClearCalledTimes++;
+        const { isValid } = this.canJekaMoveForwardRealTime();
+
+        return isValid;
+      },
+    });
   }
 
   async process(input: string) {
     this.prepareForExecution();
+
     this.mustang.run(input);
   }
 
@@ -80,16 +133,16 @@ export class Engine {
   }
 
   private prepareForExecution() {
-    this.boardController.clearJekaCoordinates();
-    this.boardController.clearBoard();
-    this.boardController.drawWorld();
-    this.boardController.drawJekaOnStart();
-    this.clearErrorState();
-    this.mustang.clearState();
     if (this.timeouts.length) {
       this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
       this.timeouts = [];
     }
+    this.jeka.resetCoordinates();
+    this.board.clearBoard();
+    this.board.drawWorld();
+    this.board.drawJekaWithBoardPosition();
+    this.clearErrorState();
+    this.mustang.clearState();
   }
 
   private setErrorState(error: string) {
@@ -98,17 +151,48 @@ export class Engine {
   }
 
   private handleError(error: string) {
-    this.setErrorState(error);
     this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
     this.timeouts = [];
+    this.setErrorState(error);
   }
 
   private clearErrorState() {
+    if (!this.error) return;
     this.error = null;
     this.onError(null);
   }
 
+  private updateLiveLocationByInstruction(instruction: JekaInstruction) {
+    switch (instruction) {
+      case JekaInstruction.MOVE_FORWARD:
+        const newRow =
+          this.getJekaNewRowForFacing(this.jeka.liveCoordinates.facing) +
+          this.jeka.liveCoordinates.row;
+        const newColumn =
+          this.getJekaNewColumnForFacing(this.jeka.liveCoordinates.facing) +
+          this.jeka.liveCoordinates.column;
+        this.jeka.liveCoordinates = {
+          ...this.jeka.liveCoordinates,
+          row: newRow,
+          column: newColumn,
+        };
+        break;
+      case JekaInstruction.TURN_LEFT:
+        this.jeka.liveCoordinates = {
+          ...this.jeka.liveCoordinates,
+          facing: angleToJekaFacing(
+            jekaFacingToAngle(this.jeka.liveCoordinates.facing) - Math.PI / 2
+          ),
+        };
+        break;
+
+      default:
+        break;
+    }
+  }
+
   private delayedProcessSingleInstruction(instruction: JekaInstruction) {
+    this.updateLiveLocationByInstruction(instruction);
     new Promise((resolve) => {
       const id = generateRandomId();
       this.timeouts.push({
@@ -172,26 +256,49 @@ export class Engine {
     }
   }
 
-  private processMoveForward() {
-    const { row, column, facing } = this.boardController.getJekaCoordinates();
+  private canJekaMoveForwardRealTime() {
+    const { row, column, facing } = this.jeka.liveCoordinates;
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
-    const isValid = this.boardController.validateJekaMove(newRow, newColumn);
+    const isValid = this.board.validateJekaMove(newRow, newColumn);
+    return { newRow, newColumn, isValid };
+  }
+
+  private canJekaMoveForward() {
+    const { row, column, facing } = this.jeka.boardCoordinates;
+    const newRow = this.getJekaNewRowForFacing(facing) + row;
+    const newColumn = this.getJekaNewColumnForFacing(facing) + column;
+
+    const isValid = this.board.validateJekaMove(newRow, newColumn);
+    return { newRow, newColumn, isValid };
+  }
+
+  private processMoveForward() {
+    const { isValid, newRow, newColumn } = this.canJekaMoveForward();
+
     if (!isValid) {
       return this.handleError("Jeka cannot move forward");
     }
 
-    this.boardController.drawJekaWithBoardPosition(newRow, newColumn);
+    this.jeka.boardCoordinates = {
+      ...this.jeka.boardCoordinates,
+      row: newRow,
+      column: newColumn,
+    };
+
+    this.board.drawJekaWithBoardPosition();
   }
 
   private processTurnLeft() {
-    const jekaPosition = this.boardController.getJekaCoordinates();
+    const jekaPosition = this.jeka.boardCoordinates;
+    this.jeka.boardCoordinates = {
+      ...jekaPosition,
+      facing: angleToJekaFacing(
+        jekaFacingToAngle(jekaPosition.facing) - Math.PI / 2
+      ),
+    };
 
-    this.boardController.drawJekaWithBoardPosition(
-      jekaPosition.row,
-      jekaPosition.column,
-      -Math.PI / 2
-    );
+    this.board.drawJekaWithBoardPosition();
   }
 }

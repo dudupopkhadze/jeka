@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import Select from "react-select";
 import { BoardConfigs } from "../../config";
-import { useBoardController, useEngine } from "../../hooks";
+import { useBoard, useEngine } from "../../hooks";
 import "./style.css";
 
 export const BoardSizeSelector = () => {
   const { resetEngineState } = useEngine();
-  const { boardSize, updateBoardConfig } = useBoardController();
+  const { boardSize, updateBoardConfig } = useBoard();
   const selectedOption = {
     label: boardSize + " Board",
     value: boardSize,

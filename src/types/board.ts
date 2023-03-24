@@ -1,4 +1,4 @@
-export interface Board {
+export interface IBoard {
   rows: number;
   columns: number;
 }
@@ -10,6 +10,6 @@ export enum BoardSizeLabel {
   EightByEight = "8x8",
 }
 
-export type BoardConfig = Board & {
+export type BoardConfig = IBoard & {
   label: BoardSizeLabel;
 };

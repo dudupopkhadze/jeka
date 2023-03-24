@@ -1,24 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useBoardController } from "../../hooks/useBoardController";
+import { useEffect, useRef, useState } from "react";
+import { useBoard } from "../../hooks";
 import "./style.css";
 
 export const Board = () => {
-  const { boardController } = useBoardController();
+  const { board } = useBoard();
   const [registered, setIsRegistered] = useState(false);
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     if (!ref.current || registered) return;
 
-    boardController.registerCanvas(ref.current);
+    board.registerCanvas(ref.current);
     setIsRegistered(true);
   }, [registered]);
 
   useEffect(() => {
     if (!registered) return;
-
-    boardController.drawWorld();
-    boardController.drawJekaOnStart();
   }, [registered]);
 
   return (
