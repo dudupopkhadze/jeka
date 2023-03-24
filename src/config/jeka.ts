@@ -10,7 +10,7 @@ export const JekaSVG = `<?xml version="1.0" standalone="no"?>
 Created by potrace 1.15, written by Peter Selinger 2001-2017
 </metadata>
 <g transform="translate(0.000000,937.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
+fill="#f89d0f" stroke="none">
 <path d="M10985 9233 c-56 -115 -145 -307 -192 -413 -15 -32 -192 -240 -341
 -400 -137 -146 -313 -313 -429 -405 -74 -59 -88 -77 -154 -187 -40 -68 -98
 -162 -130 -210 -80 -119 -284 -361 -365 -432 -85 -76 -150 -164 -170 -231 -8

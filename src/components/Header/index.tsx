@@ -1,6 +1,7 @@
 import React from "react";
 import "./style.css";
 import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
+import { ReactComponent as DOG } from "../../svgs/dog.svg";
 import { useCodeController } from "../../hooks";
 import { JekaInstruction } from "../../types";
 import { useEngine } from "../../hooks/useEngine";
@@ -21,7 +22,8 @@ export const Header: React.FC = () => {
   return (
     <div className="Header">
       <div className="Header-Title-Wrapper ">
-        <span className="Header-Title">Jeka</span>
+        <span className="Header-Title">{`Jeka 🐶`}</span>
+
         {error && <span className="Header-Error">{error}</span>}
       </div>
       <div className="Header-Controls">
