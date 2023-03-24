@@ -1,4 +1,10 @@
-import { Board, CodeInput, Header, DelaySlider } from "./components";
+import {
+  Board,
+  CodeInput,
+  Header,
+  DelaySlider,
+  Configuration,
+} from "./components";
 import {
   BoardControllerContextProvider,
   CodeControllerContextProvider,
@@ -13,7 +19,7 @@ function App() {
         <EngineContextProvider>
           <div className="App">
             <Header />
-            <DelaySlider />
+            <Configuration />
             <div className="App-Container">
               <CodeInput />
               <Board />

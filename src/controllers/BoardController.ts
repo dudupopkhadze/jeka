@@ -7,7 +7,7 @@ import {
   CIRCLE_RADIUS,
   JekaSVG,
 } from "../config";
-import { Board, JekaFacing } from "../types";
+import { Board, BoardConfig, JekaFacing } from "../types";
 import { angleToJekaFacing, jekaFacingToAngle } from "../utils";
 
 export class BoardController {
@@ -24,12 +24,8 @@ export class BoardController {
   };
   private jekaImageIsLoaded = false;
 
-  constructor() {
-    this.board = {
-      rows: 5,
-      columns: 5,
-    };
-
+  constructor(boardConfig: BoardConfig) {
+    this.board = boardConfig;
     this.jeka = new Image();
 
     const svg64 = btoa(JekaSVG);
@@ -42,6 +38,10 @@ export class BoardController {
     this.jeka.onload = () => {
       this.jekaImageIsLoaded = true;
     };
+  }
+
+  setBoard(board: BoardConfig) {
+    this.board = board;
   }
 
   registerCanvas(canvas: HTMLCanvasElement) {

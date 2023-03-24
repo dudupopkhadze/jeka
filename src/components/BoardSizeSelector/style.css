@@ -1,0 +1,13 @@
+.BoardSizeSelector {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.BoardSizeSelector-Title {
+  margin-left: 20px;
+  font-size: 25px;
+  font-weight: 600;
+  color: #f89d0f;
+  margin-right: 20px;
+}
