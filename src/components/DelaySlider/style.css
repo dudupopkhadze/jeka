@@ -1,8 +1,6 @@
 .Slider-Container {
-  width: 100%; /* Width of the outside container */
   display: flex;
   justify-content: center;
-  padding-top: 25px;
   align-items: center;
 }
 

@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
+import { BoardConfigs, StartingBoardLabel } from "../config";
 import { BoardController } from "../controllers";
-
-const boardController = new BoardController();
+import { BoardSizeLabel } from "../types";
 
 export const BoardControllerContext = React.createContext<
-  { boardController: BoardController } | undefined
+  | {
+      boardController: BoardController;
+      boardSize: BoardSizeLabel;
+      updateBoardConfig: (label: BoardSizeLabel) => void;
+    }
+  | undefined
 >(undefined);
 
 export const BoardControllerContextProvider = ({
@@ -12,8 +17,24 @@ export const BoardControllerContextProvider = ({
 }: {
   children: React.ReactElement;
 }) => {
+  const boardControllerRef = useRef(
+    new BoardController(
+      BoardConfigs.find(({ label }) => label === StartingBoardLabel)!
+    )
+  );
+  const [boardSize, setBoardSize] =
+    useState<BoardSizeLabel>(StartingBoardLabel);
+
+  const updateBoardConfig = useCallback((label: BoardSizeLabel) => {}, []);
+
   return (
-    <BoardControllerContext.Provider value={{ boardController }}>
+    <BoardControllerContext.Provider
+      value={{
+        boardController: boardControllerRef.current,
+        boardSize,
+        updateBoardConfig,
+      }}
+    >
       {children}
     </BoardControllerContext.Provider>
   );
