@@ -133,6 +133,7 @@ export class Engine {
   }
 
   private prepareForExecution() {
+    this.frontIsClearCalledTimes = 0;
     if (this.timeouts.length) {
       this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
       this.timeouts = [];
@@ -157,7 +158,6 @@ export class Engine {
   }
 
   private clearErrorState() {
-    if (!this.error) return;
     this.error = null;
     this.onError(null);
   }
