@@ -1,6 +1,6 @@
 import { BoardController } from "../controllers";
-import { Mustang } from "../core";
-import { Environment } from "../core/Environment";
+import { Mustang } from "../mustang";
+import { Environment } from "../mustang/Environment";
 import { AvailableAudio, JekaFacing, JekaInstruction } from "../types";
 import { generateRandomId } from "../utils";
 import { AudioManager } from "./AudioManager";
