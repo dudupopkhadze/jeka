@@ -4,6 +4,7 @@ import {
   PADDING,
   CANVAS_HEIGHT,
   CIRCLE_RADIUS,
+  OBSTACLE_WIDTH,
 } from "../config";
 import { Jeka } from "../engine/Jeka";
 import { BoardConfig } from "../types";
@@ -85,8 +86,17 @@ export class Board {
   drawWorld() {
     if (!this.jeka?.jekaSvgIsLoaded) return;
 
+    this.drawDots();
+    this.drawVerticalLines();
+    this.drawHorizontalLines();
+
+    this.isWordInitialized = true;
+  }
+
+  private drawDots() {
     const context = this.getContext();
 
+    // draw dots
     for (let i = 0; i < this.boardConfig.rows; i++) {
       for (let j = 0; j < this.boardConfig.columns; j++) {
         context.beginPath();
@@ -95,8 +105,91 @@ export class Board {
         context.fill();
       }
     }
+  }
 
-    this.isWordInitialized = true;
+  private drawHorizontalLines() {
+    const context = this.getContext();
+    if (this.boardConfig.horizontalLines) {
+      for (const line of this.boardConfig.horizontalLines) {
+        for (let i = 0; i < this.boardConfig.rows; i++) {
+          for (let j = 0; j < this.boardConfig.columns; j++) {
+            if (i === line.afterRow && j === line.afterColumn) {
+              const startCoordinates1 = this.getBoardCellCoordinates(
+                i,
+                j,
+                false
+              );
+              const startCoordinates2 = this.getBoardCellCoordinates(
+                i + 1,
+                j + 1,
+                false
+              );
+
+              const yStart =
+                startCoordinates1.y -
+                (startCoordinates1.y - startCoordinates2.y) / 2;
+
+              const xStart = startCoordinates1.x;
+
+              const xDiff = (startCoordinates2.x - startCoordinates1.x) / 2;
+
+              context.beginPath(); // Start a new path
+              context.moveTo(xStart - xDiff, yStart);
+
+              context.lineTo(xStart + xDiff, yStart);
+              context.lineWidth = OBSTACLE_WIDTH;
+              context.stroke();
+              context.restore();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private drawVerticalLines() {
+    const context = this.getContext();
+    if (this.boardConfig.verticalLines) {
+      for (const line of this.boardConfig.verticalLines) {
+        for (let i = 0; i < this.boardConfig.rows; i++) {
+          for (let j = 0; j < this.boardConfig.columns; j++) {
+            if (i === line.afterRow && j === line.afterColumn) {
+              const startCoordinates1 = this.getBoardCellCoordinates(
+                i,
+                j,
+                false
+              );
+              const startCoordinates2 = this.getBoardCellCoordinates(
+                i + 1,
+                j + 1,
+                false
+              );
+
+              const offset =
+                line.afterColumn === this.boardConfig.columns - 1 ? 30 : 0;
+
+              const yStart =
+                startCoordinates1.y +
+                (startCoordinates1.y - startCoordinates2.y) / 2 +
+                offset;
+              const yEnd = startCoordinates2.y + offset;
+
+              const xStart =
+                startCoordinates1.x +
+                (startCoordinates2.x - startCoordinates1.x) / 2 -
+                OBSTACLE_WIDTH / 2;
+
+              context.beginPath(); // Start a new path
+              context.moveTo(xStart, yStart);
+              context.lineTo(xStart, yEnd);
+              context.lineWidth = OBSTACLE_WIDTH;
+              context.stroke();
+              context.restore();
+            }
+          }
+        }
+      }
+    }
   }
 
   private getContext() {
@@ -105,24 +198,29 @@ export class Board {
     return context;
   }
 
-  private getBoardCellCoordinates(row: number, column: number) {
+  private getBoardCellCoordinates(
+    row: number,
+    column: number,
+    addCircleRadius = true
+  ) {
     const { rows, columns } = this.boardConfig;
+    const diameter = addCircleRadius ? CIRCLE_DIAMETER : 0;
 
-    const dx = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (rows - 1);
-    const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (columns - 1);
+    const dx = (CANVAS_WIDTH - 2 * diameter) / (rows - 1);
+    const dy = (CANVAS_WIDTH - 2 * diameter) / (columns - 1);
 
     const x =
       row === 0
         ? PADDING
         : row === rows - 1
         ? CANVAS_WIDTH - PADDING
-        : dx * row + CIRCLE_DIAMETER;
+        : dx * row + diameter;
     const y =
       column === 0
         ? PADDING
         : column === columns - 1
         ? CANVAS_HEIGHT - PADDING
-        : dy * column + CIRCLE_DIAMETER;
+        : dy * column + diameter;
     return { x, y };
   }
 
