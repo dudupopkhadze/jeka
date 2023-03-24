@@ -12,6 +12,7 @@ Jeka is simple robot named Karel that lives in an environment consisting of a gr
 - `moveForward`: Jeka moves by one square in the direction he is facing 
 - `turnLeft`: Jeka turns 90 ° left
 -  `woof`: Jeka barks at yout (friendly)
+-  `frontIsClear`: Jeka tells you if you can move forward in the facing direction
 - `putBeeper`: Jeka puts a beeper on the square he is standing at ( -- coming soon),
 - `pickBeeper`: Jeka piack a beeper from the square he is standing at ( -- coming soon)
 
