@@ -40,12 +40,10 @@ export const CodeControllerContextProvider = ({
 //   turnLeft();
 //   turnLeft();
 //}
-moveForward();
-moveForward();
-moveForward();
-moveForward();
-moveForward();
-moveForward();
+
+while(frontIsClear()){
+  moveForward();
+}
 
 \n`,
       extensions: [

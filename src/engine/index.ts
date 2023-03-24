@@ -28,6 +28,7 @@ export class Engine {
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
   private jeka: Jeka;
   private jekaCallbackFired = false;
+  private frontIsClearCalledTimes = 0;
 
   constructor(config: Config) {
     this.audioManager = new AudioManager();
@@ -93,7 +94,14 @@ export class Engine {
         return 0;
       },
       call: () => {
-        const { isValid } = this.canJekaMoveForward();
+        if (this.frontIsClearCalledTimes > 1000) {
+          this.setErrorState("Possible infinite loop detected");
+          return;
+        }
+        this.frontIsClearCalledTimes++;
+        const { isValid } = this.canJekaMoveForwardRealTime();
+
+        console.log({ isValid });
 
         return isValid;
       },
@@ -125,16 +133,16 @@ export class Engine {
   }
 
   private prepareForExecution() {
+    if (this.timeouts.length) {
+      this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
+      this.timeouts = [];
+    }
     this.jeka.resetCoordinates();
     this.board.clearBoard();
     this.board.drawWorld();
     this.board.drawJekaWithBoardPosition();
     this.clearErrorState();
     this.mustang.clearState();
-    if (this.timeouts.length) {
-      this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
-      this.timeouts = [];
-    }
   }
 
   private setErrorState(error: string) {
@@ -154,7 +162,37 @@ export class Engine {
     this.onError(null);
   }
 
+  private updateLiveLocationByInstruction(instruction: JekaInstruction) {
+    switch (instruction) {
+      case JekaInstruction.MOVE_FORWARD:
+        const newRow =
+          this.getJekaNewRowForFacing(this.jeka.liveCoordinates.facing) +
+          this.jeka.liveCoordinates.row;
+        const newColumn =
+          this.getJekaNewColumnForFacing(this.jeka.liveCoordinates.facing) +
+          this.jeka.liveCoordinates.column;
+        this.jeka.liveCoordinates = {
+          ...this.jeka.liveCoordinates,
+          row: newRow,
+          column: newColumn,
+        };
+        break;
+      case JekaInstruction.TURN_LEFT:
+        this.jeka.liveCoordinates = {
+          ...this.jeka.liveCoordinates,
+          facing: angleToJekaFacing(
+            jekaFacingToAngle(this.jeka.liveCoordinates.facing) - Math.PI / 2
+          ),
+        };
+        break;
+
+      default:
+        break;
+    }
+  }
+
   private delayedProcessSingleInstruction(instruction: JekaInstruction) {
+    this.updateLiveLocationByInstruction(instruction);
     new Promise((resolve) => {
       const id = generateRandomId();
       this.timeouts.push({
@@ -216,6 +254,15 @@ export class Engine {
       case JekaFacing.WEST:
         return 0;
     }
+  }
+
+  private canJekaMoveForwardRealTime() {
+    const { row, column, facing } = this.jeka.liveCoordinates;
+    const newRow = this.getJekaNewRowForFacing(facing) + row;
+    const newColumn = this.getJekaNewColumnForFacing(facing) + column;
+
+    const isValid = this.board.validateJekaMove(newRow, newColumn);
+    return { newRow, newColumn, isValid };
   }
 
   private canJekaMoveForward() {
