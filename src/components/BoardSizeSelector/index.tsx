@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import Select from "react-select";
 import { BoardConfigs } from "../../config";
-import { useBoardController } from "../../hooks";
+import { useBoardController, useEngine } from "../../hooks";
 import "./style.css";
 
 export const BoardSizeSelector = () => {
+  const { resetEngineState } = useEngine();
   const { boardSize, updateBoardConfig } = useBoardController();
   const selectedOption = {
     label: boardSize + " Board",
@@ -30,6 +31,7 @@ export const BoardSizeSelector = () => {
         onChange={(v) => {
           if (!v?.value) return;
           updateBoardConfig(v.value);
+          resetEngineState();
         }}
         styles={{ container: (base, state) => ({ ...base, width: 250 }) }}
       />

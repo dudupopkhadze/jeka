@@ -26,7 +26,6 @@ export class BoardController {
 
   constructor(boardConfig: BoardConfig) {
     this.board = boardConfig;
-
     this.jeka = new Image();
 
     const svg64 = btoa(JekaSVG);
@@ -41,7 +40,9 @@ export class BoardController {
     };
   }
 
-  setBoard(board: BoardConfig) {}
+  setBoard(board: BoardConfig) {
+    this.board = board;
+  }
 
   registerCanvas(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
