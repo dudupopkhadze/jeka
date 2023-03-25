@@ -261,7 +261,11 @@ export class Engine {
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
-    const isValid = this.board.validateJekaMove(newRow, newColumn);
+    const isValid = this.board.validateJekaMove(
+      newRow,
+      newColumn,
+      this.jeka.liveCoordinates
+    );
     return { newRow, newColumn, isValid };
   }
 
@@ -270,7 +274,11 @@ export class Engine {
     const newRow = this.getJekaNewRowForFacing(facing) + row;
     const newColumn = this.getJekaNewColumnForFacing(facing) + column;
 
-    const isValid = this.board.validateJekaMove(newRow, newColumn);
+    const isValid = this.board.validateJekaMove(
+      newRow,
+      newColumn,
+      this.jeka.boardCoordinates
+    );
     return { newRow, newColumn, isValid };
   }
 

@@ -61,44 +61,44 @@ export const BoardConfigs: BoardConfig[] = [
 
       {
         from: {
-          row: 0,
-          column: 0,
-        },
-        to: {
           row: 1,
           column: 0,
         },
+        to: {
+          row: 2,
+          column: 0,
+        },
       },
 
       {
         from: {
-          row: 0,
-          column: 1,
-        },
-        to: {
           row: 1,
           column: 1,
         },
+        to: {
+          row: 2,
+          column: 1,
+        },
       },
 
       {
         from: {
-          row: 0,
-          column: 2,
-        },
-        to: {
           row: 1,
           column: 2,
         },
+        to: {
+          row: 2,
+          column: 2,
+        },
       },
 
       {
         from: {
-          row: 0,
+          row: 1,
           column: 3,
         },
         to: {
-          row: 1,
+          row: 2,
           column: 3,
         },
       },

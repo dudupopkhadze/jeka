@@ -15,9 +15,11 @@ export class Board {
   private boardConfig: BoardConfig;
   private jeka?: Jeka;
   private isWordInitialized = false;
+  private blockedRoutes = new Set<string>();
 
   constructor(boardConfig: BoardConfig) {
     this.boardConfig = boardConfig;
+    this.blockedRoutesFromConfig();
   }
 
   setJeka = (jeka: Jeka) => {
@@ -26,6 +28,7 @@ export class Board {
 
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
+    this.blockedRoutesFromConfig();
     if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
   }
 
@@ -41,9 +44,18 @@ export class Board {
     return this.isWordInitialized;
   }
 
-  validateJekaMove(nextRow: number, nextColumn: number) {
+  validateJekaMove(
+    nextRow: number,
+    nextColumn: number,
+    cur?: { row: number; column: number }
+  ) {
     if (nextRow < 0 || nextRow >= this.boardConfig.rows) return false;
     if (nextColumn < 0 || nextColumn >= this.boardConfig.columns) return false;
+    if (cur) {
+      return !this.blockedRoutes.has(
+        `${cur.row},${cur.column}:${nextRow}${nextColumn}`
+      );
+    }
     return true;
   }
 
@@ -104,6 +116,16 @@ export class Board {
       }
     }
   }
+
+  private blockedRoutesFromConfig = () => {
+    if (!this.boardConfig.obstacles?.length) return;
+    this.blockedRoutes.clear();
+    this.boardConfig.obstacles.forEach((obstacle) => {
+      this.blockedRoutes.add(
+        `${obstacle.from.row},${obstacle.from.column}:${obstacle.to.row}${obstacle.to.column}`
+      );
+    });
+  };
 
   private drawObstacles() {
     if (!this.boardConfig.obstacles) return;
