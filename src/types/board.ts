@@ -5,8 +5,11 @@ type Line = {
 export interface IBoard {
   rows: number;
   columns: number;
-  verticalLines?: Line[];
-  horizontalLines?: Line[];
+
+  obstacles?: {
+    from: { row: number; column: number };
+    to: { row: number; column: number };
+  }[];
 }
 
 export enum BoardSizeLabel {

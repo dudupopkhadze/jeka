@@ -87,8 +87,7 @@ export class Board {
     if (!this.jeka?.jekaSvgIsLoaded) return;
 
     this.drawDots();
-    this.drawVerticalLines();
-    this.drawHorizontalLines();
+    this.drawObstacles();
 
     this.isWordInitialized = true;
   }
@@ -96,7 +95,6 @@ export class Board {
   private drawDots() {
     const context = this.getContext();
 
-    // draw dots
     for (let i = 0; i < this.boardConfig.rows; i++) {
       for (let j = 0; j < this.boardConfig.columns; j++) {
         context.beginPath();
@@ -107,88 +105,53 @@ export class Board {
     }
   }
 
-  private drawHorizontalLines() {
+  private drawObstacles() {
+    if (!this.boardConfig.obstacles) return;
     const context = this.getContext();
-    if (this.boardConfig.horizontalLines) {
-      for (const line of this.boardConfig.horizontalLines) {
-        for (let i = 0; i < this.boardConfig.rows; i++) {
-          for (let j = 0; j < this.boardConfig.columns; j++) {
-            if (i === line.afterRow && j === line.afterColumn) {
-              const startCoordinates1 = this.getBoardCellCoordinates(
-                i,
-                j,
-                false
-              );
-              const startCoordinates2 = this.getBoardCellCoordinates(
-                i + 1,
-                j + 1,
-                false
-              );
+    for (const block of this.boardConfig.obstacles) {
+      const { from, to } = block;
 
-              const yStart =
-                startCoordinates1.y -
-                (startCoordinates1.y - startCoordinates2.y) / 2;
+      const direction = from.row !== to.row ? "vertical" : "horizontal";
 
-              const xStart = startCoordinates1.x;
+      context.beginPath(); // Start a new path
 
-              const xDiff = (startCoordinates2.x - startCoordinates1.x) / 2;
+      if (direction === "vertical") {
+        const start = this.getBoardCellCoordinatesForObstacle(
+          from.row,
+          from.column,
+          true
+        );
+        const end = this.getBoardCellCoordinatesForObstacle(
+          to.row,
+          to.column + 1,
+          true
+        );
 
-              context.beginPath(); // Start a new path
-              context.moveTo(xStart - xDiff, yStart);
+        const xOffset = (end.x - start.x) / 2;
 
-              context.lineTo(xStart + xDiff, yStart);
-              context.lineWidth = OBSTACLE_WIDTH;
-              context.stroke();
-              context.restore();
-            }
-          }
-        }
+        const yOffset = (end.y - start.y) / 2;
+        context.moveTo(start.x + xOffset, start.y - yOffset);
+        context.lineTo(start.x + xOffset, start.y + yOffset);
+      } else {
+        const start = this.getBoardCellCoordinatesForObstacle(
+          from.row,
+          from.column
+        );
+        const end = this.getBoardCellCoordinatesForObstacle(
+          to.row + 1,
+          to.column
+        );
+
+        const xOffset = (end.x - start.x) / 2;
+
+        const yOffset = (start.y - end.y) / 2;
+        context.moveTo(start.x - xOffset, end.y + yOffset);
+        context.lineTo(start.x + xOffset, end.y + yOffset);
       }
-    }
-  }
 
-  private drawVerticalLines() {
-    const context = this.getContext();
-    if (this.boardConfig.verticalLines) {
-      for (const line of this.boardConfig.verticalLines) {
-        for (let i = 0; i < this.boardConfig.rows; i++) {
-          for (let j = 0; j < this.boardConfig.columns; j++) {
-            if (i === line.afterRow && j === line.afterColumn) {
-              const startCoordinates1 = this.getBoardCellCoordinates(
-                i,
-                j,
-                false
-              );
-              const startCoordinates2 = this.getBoardCellCoordinates(
-                i + 1,
-                j + 1,
-                false
-              );
-
-              const offset =
-                line.afterColumn === this.boardConfig.columns - 1 ? 30 : 0;
-
-              const yStart =
-                startCoordinates1.y +
-                (startCoordinates1.y - startCoordinates2.y) / 2 +
-                offset;
-              const yEnd = startCoordinates2.y + offset;
-
-              const xStart =
-                startCoordinates1.x +
-                (startCoordinates2.x - startCoordinates1.x) / 2 -
-                OBSTACLE_WIDTH / 2;
-
-              context.beginPath(); // Start a new path
-              context.moveTo(xStart, yStart);
-              context.lineTo(xStart, yEnd);
-              context.lineWidth = OBSTACLE_WIDTH;
-              context.stroke();
-              context.restore();
-            }
-          }
-        }
-      }
+      context.lineWidth = OBSTACLE_WIDTH;
+      context.stroke();
+      context.restore();
     }
   }
 
@@ -198,29 +161,51 @@ export class Board {
     return context;
   }
 
-  private getBoardCellCoordinates(
+  private getBoardCellCoordinatesForObstacle(
     row: number,
     column: number,
-    addCircleRadius = true
+    addRowPadding?: boolean
   ) {
     const { rows, columns } = this.boardConfig;
-    const diameter = addCircleRadius ? CIRCLE_DIAMETER : 0;
 
-    const dx = (CANVAS_WIDTH - 2 * diameter) / (rows - 1);
-    const dy = (CANVAS_WIDTH - 2 * diameter) / (columns - 1);
+    const dx = CANVAS_WIDTH / (rows - 1);
+    const dy = CANVAS_WIDTH / (columns - 1);
+
+    const x =
+      row === 0
+        ? addRowPadding
+          ? PADDING
+          : 0
+        : row === rows - 1
+        ? CANVAS_WIDTH - (addRowPadding ? PADDING : 0)
+        : dx * row;
+    const y =
+      column === 0
+        ? 0
+        : column === columns - 1
+        ? CANVAS_HEIGHT - 0
+        : dy * column;
+    return { x, y };
+  }
+
+  private getBoardCellCoordinates(row: number, column: number) {
+    const { rows, columns } = this.boardConfig;
+
+    const dx = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (rows - 1);
+    const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (columns - 1);
 
     const x =
       row === 0
         ? PADDING
         : row === rows - 1
         ? CANVAS_WIDTH - PADDING
-        : dx * row + diameter;
+        : dx * row + CIRCLE_DIAMETER;
     const y =
       column === 0
         ? PADDING
         : column === columns - 1
         ? CANVAS_HEIGHT - PADDING
-        : dy * column + diameter;
+        : dy * column + CIRCLE_DIAMETER;
     return { x, y };
   }
 

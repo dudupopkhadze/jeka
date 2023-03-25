@@ -14,16 +14,93 @@ export const BoardConfigs: BoardConfig[] = [
     rows: 4,
     columns: 4,
     label: BoardSizeLabel.FourByFour,
-    verticalLines: [
+    obstacles: [
       {
-        afterRow: 0,
-        afterColumn: 3,
+        from: {
+          row: 0,
+          column: 3,
+        },
+        to: {
+          row: 0,
+          column: 2,
+        },
       },
-    ],
-    horizontalLines: [
+
       {
-        afterRow: 0,
-        afterColumn: 2,
+        from: {
+          row: 1,
+          column: 3,
+        },
+        to: {
+          row: 1,
+          column: 2,
+        },
+      },
+
+      {
+        from: {
+          row: 2,
+          column: 3,
+        },
+        to: {
+          row: 2,
+          column: 2,
+        },
+      },
+
+      {
+        from: {
+          row: 3,
+          column: 3,
+        },
+        to: {
+          row: 3,
+          column: 2,
+        },
+      },
+
+      {
+        from: {
+          row: 0,
+          column: 0,
+        },
+        to: {
+          row: 1,
+          column: 0,
+        },
+      },
+
+      {
+        from: {
+          row: 0,
+          column: 1,
+        },
+        to: {
+          row: 1,
+          column: 1,
+        },
+      },
+
+      {
+        from: {
+          row: 0,
+          column: 2,
+        },
+        to: {
+          row: 1,
+          column: 2,
+        },
+      },
+
+      {
+        from: {
+          row: 0,
+          column: 3,
+        },
+        to: {
+          row: 1,
+          column: 3,
+        },
       },
     ],
   },
