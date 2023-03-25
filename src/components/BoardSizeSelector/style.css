@@ -11,3 +11,16 @@
   color: #f89d0f;
   margin-right: 20px;
 }
+
+.BoardSizeSelector-Checkbox {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.BoardSizeSelector-Checkbox-Label {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #f89d0f;
+}

@@ -167,7 +167,7 @@ export class Board {
         const xOffset = (end.x - start.x) / 2;
 
         const yOffset = (start.y - end.y) / 2;
-        context.moveTo(start.x - xOffset, end.y + yOffset);
+        context.moveTo(start.x - xOffset - 2.5, end.y + yOffset);
         context.lineTo(start.x + xOffset, end.y + yOffset);
       }
 

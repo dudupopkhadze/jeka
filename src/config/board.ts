@@ -17,72 +17,6 @@ export const BoardConfigs: BoardConfig[] = [
     obstacles: [
       {
         from: {
-          row: 0,
-          column: 3,
-        },
-        to: {
-          row: 0,
-          column: 2,
-        },
-      },
-
-      {
-        from: {
-          row: 1,
-          column: 3,
-        },
-        to: {
-          row: 1,
-          column: 2,
-        },
-      },
-
-      {
-        from: {
-          row: 2,
-          column: 3,
-        },
-        to: {
-          row: 2,
-          column: 2,
-        },
-      },
-
-      {
-        from: {
-          row: 3,
-          column: 3,
-        },
-        to: {
-          row: 3,
-          column: 2,
-        },
-      },
-
-      {
-        from: {
-          row: 1,
-          column: 0,
-        },
-        to: {
-          row: 2,
-          column: 0,
-        },
-      },
-
-      {
-        from: {
-          row: 1,
-          column: 1,
-        },
-        to: {
-          row: 2,
-          column: 1,
-        },
-      },
-
-      {
-        from: {
           row: 1,
           column: 2,
         },
@@ -113,6 +47,116 @@ export const BoardConfigs: BoardConfig[] = [
     rows: 6,
     columns: 6,
     label: BoardSizeLabel.SixBySix,
+    obstacles: [
+      // {
+      //   from: {
+      //     row: 0,
+      //     column: 3,
+      //   },
+      //   to: {
+      //     row: 0,
+      //     column: 2,
+      //   },
+      // },
+
+      // {
+      //   from: {
+      //     row: 1,
+      //     column: 3,
+      //   },
+      //   to: {
+      //     row: 1,
+      //     column: 2,
+      //   },
+      // },
+
+      // {
+      //   from: {
+      //     row: 2,
+      //     column: 3,
+      //   },
+      //   to: {
+      //     row: 2,
+      //     column: 2,
+      //   },
+      // },
+
+      {
+        from: {
+          row: 2,
+          column: 4,
+        },
+        to: {
+          row: 2,
+          column: 5,
+        },
+      },
+
+      {
+        from: {
+          row: 1,
+          column: 5,
+        },
+        to: {
+          row: 2,
+          column: 5,
+        },
+      },
+
+      {
+        from: {
+          row: 3,
+          column: 3,
+        },
+        to: {
+          row: 3,
+          column: 4,
+        },
+      },
+
+      {
+        from: {
+          row: 2,
+          column: 4,
+        },
+        to: {
+          row: 3,
+          column: 4,
+        },
+      },
+      {
+        from: {
+          row: 4,
+          column: 3,
+        },
+        to: {
+          row: 4,
+          column: 4,
+        },
+      },
+
+      {
+        from: {
+          row: 4,
+          column: 4,
+        },
+        to: {
+          row: 5,
+          column: 4,
+        },
+      },
+
+      {
+        from: {
+          row: 4,
+          column: 5,
+        },
+        to: {
+          row: 5,
+          column: 5,
+        },
+      },
+    ],
   },
   {
     rows: 8,
