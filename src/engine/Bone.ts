@@ -1,4 +1,4 @@
-import { BONE_SIZE, BoneSVG } from "../config";
+import { BoneSVG, BONE_SIZE } from "../config";
 
 interface Config {
   onLoad?: () => void;
@@ -6,7 +6,7 @@ interface Config {
   providedLocations?: { row: number; column: number; count: number }[];
 }
 
-export class Bone {
+export class BoneManager {
   svg: HTMLImageElement;
   boneSvgIsLoaded = false;
   boardLocations = new Map<string, number>();
@@ -38,8 +38,45 @@ export class Bone {
     this.initLocations();
   }
 
+  canPickBone(row: number, column: number): boolean {
+    const boneCount = this.boardLocations.get(`${row}:${column}`);
+    return boneCount ? boneCount > 0 : false;
+  }
+
+  canPickBoneLive(row: number, column: number): boolean {
+    const boneCount = this.liveLocations.get(`${row}:${column}`);
+    return boneCount ? boneCount > 0 : false;
+  }
+
+  putBone(row: number, column: number): void {
+    const boneCount = this.boardLocations.get(`${row}:${column}`);
+    if (boneCount) {
+      this.boardLocations.set(`${row}:${column}`, boneCount + 1);
+    } else {
+      this.boardLocations.set(`${row}:${column}`, 1);
+    }
+  }
+
+  putBoneLive(row: number, column: number): void {
+    const boneCount = this.liveLocations.get(`${row}:${column}`);
+    if (boneCount) {
+      this.liveLocations.set(`${row}:${column}`, boneCount + 1);
+    } else {
+      this.liveLocations.set(`${row}:${column}`, 1);
+    }
+  }
+
+  updateProvidedLocations(
+    providedLocations: { row: number; column: number; count: number }[]
+  ) {
+    this.providedLocations = providedLocations;
+    this.initLocations();
+  }
+
   private initLocations() {
     if (this.providedLocations) {
+      this.boardLocations.clear();
+      this.liveLocations.clear();
       this.providedLocations.forEach((location) => {
         this.boardLocations.set(
           `${location.row}:${location.column}`,
