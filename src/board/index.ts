@@ -118,15 +118,21 @@ export class Board {
     const ctx = this.getContext();
 
     this.boardConfig.boneLocations.forEach((location) => {
-      const hasBone = this.boneManager!.hasBone(location.row, location.column);
-      console.log(hasBone);
-      if (hasBone) {
-        const { x, y } = this.getJekaCoordinatesForRowAndColumn(
-          location.row,
-          location.column
-        );
+      const bones = new Array(
+        this.boneManager!.bonesAt(location.row, location.column)
+      ).fill(0);
 
-        ctx.drawImage(this.boneManager!.svg, x, y);
+      if (!bones.length) return;
+      const { x, y } = this.getJekaCoordinatesForRowAndColumn(
+        location.row,
+        location.column
+      );
+
+      ctx.drawImage(this.boneManager!.svg, x, y);
+
+      if (bones.length > 1) {
+        ctx.font = "15px Arial";
+        ctx.fillText(`${bones.length}`, x + 20, y + 13);
       }
     });
   }

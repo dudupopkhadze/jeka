@@ -78,6 +78,11 @@ export class BoneManager {
     return boneCount === undefined ? false : boneCount > 0;
   }
 
+  bonesAt(row: number, column: number): number {
+    const boneCount = this.boardLocations.get(`${row}:${column}`);
+    return boneCount === undefined ? 0 : boneCount;
+  }
+
   private initLocations() {
     if (this.providedLocations) {
       this.boardLocations.clear();

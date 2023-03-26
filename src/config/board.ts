@@ -18,12 +18,17 @@ export const BoardConfigs: BoardConfig[] = [
       {
         row: 1,
         column: 2,
-        count: 1,
+        count: 2,
       },
       {
         row: 2,
         column: 2,
         count: 1,
+      },
+      {
+        row: 0,
+        column: 0,
+        count: 3,
       },
     ],
     obstacles: [
