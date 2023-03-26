@@ -118,8 +118,11 @@ export class Board {
   }
 
   private blockedRoutesFromConfig = () => {
-    if (!this.boardConfig.obstacles?.length) return;
     this.blockedRoutes.clear();
+    if (!this.boardConfig.obstacles?.length) {
+      return;
+    }
+
     this.boardConfig.obstacles.forEach((obstacle) => {
       this.blockedRoutes.add(
         `${obstacle.from.row},${obstacle.from.column}:${obstacle.to.row}${obstacle.to.column}`
@@ -133,42 +136,30 @@ export class Board {
     for (const block of this.boardConfig.obstacles) {
       const { from, to } = block;
 
-      const direction = from.row !== to.row ? "vertical" : "horizontal";
+      const isVertical = from.row !== to.row;
 
       context.beginPath(); // Start a new path
 
-      if (direction === "vertical") {
-        const start = this.getBoardCellCoordinatesForObstacle(
-          from.row,
-          from.column,
-          true
-        );
-        const end = this.getBoardCellCoordinatesForObstacle(
-          to.row,
-          to.column + 1,
-          true
-        );
+      if (isVertical) {
+        const start = this.getBoardCellCoordinates(from.row, from.column);
+        const end = this.getBoardCellCoordinates(to.row, to.column + 1);
 
-        const xOffset = (end.x - start.x) / 2;
+        const xOffset = (end.x - start.x - 5) / 2 + 2.5;
 
         const yOffset = (end.y - start.y) / 2;
         context.moveTo(start.x + xOffset, start.y - yOffset);
         context.lineTo(start.x + xOffset, start.y + yOffset);
       } else {
-        const start = this.getBoardCellCoordinatesForObstacle(
-          from.row,
-          from.column
-        );
-        const end = this.getBoardCellCoordinatesForObstacle(
-          to.row + 1,
-          to.column
-        );
+        const start = this.getBoardCellCoordinates(from.row, from.column);
+        const end = this.getBoardCellCoordinates(to.row + 1, to.column);
 
         const xOffset = (end.x - start.x) / 2;
 
-        const yOffset = (start.y - end.y) / 2;
-        context.moveTo(start.x - xOffset - 2.5, end.y + yOffset);
-        context.lineTo(start.x + xOffset, end.y + yOffset);
+        const yOffset =
+          (start.y - end.y - OBSTACLE_WIDTH) / 2 + OBSTACLE_WIDTH / 2;
+
+        context.moveTo(start.x - xOffset - 2, end.y + yOffset);
+        context.lineTo(start.x + xOffset + 2, end.y + yOffset);
       }
 
       context.lineWidth = OBSTACLE_WIDTH;
@@ -183,51 +174,27 @@ export class Board {
     return context;
   }
 
-  private getBoardCellCoordinatesForObstacle(
-    row: number,
-    column: number,
-    addRowPadding?: boolean
-  ) {
-    const { rows, columns } = this.boardConfig;
-
-    const dx = CANVAS_WIDTH / (rows - 1);
-    const dy = CANVAS_WIDTH / (columns - 1);
-
-    const x =
-      row === 0
-        ? addRowPadding
-          ? PADDING
-          : 0
-        : row === rows - 1
-        ? CANVAS_WIDTH - (addRowPadding ? PADDING : 0)
-        : dx * row;
-    const y =
-      column === 0
-        ? 0
-        : column === columns - 1
-        ? CANVAS_HEIGHT - 0
-        : dy * column;
-    return { x, y };
-  }
-
   private getBoardCellCoordinates(row: number, column: number) {
     const { rows, columns } = this.boardConfig;
 
-    const dx = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (rows - 1);
-    const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (columns - 1);
+    const dx =
+      (CANVAS_WIDTH - rows * CIRCLE_DIAMETER - 2 * PADDING) / (rows - 1);
+    const dy =
+      (CANVAS_HEIGHT - columns * CIRCLE_DIAMETER - 2 * PADDING) / (columns - 1);
 
     const x =
       row === 0
-        ? PADDING
+        ? PADDING + CIRCLE_RADIUS
         : row === rows - 1
-        ? CANVAS_WIDTH - PADDING
-        : dx * row + CIRCLE_DIAMETER;
+        ? CANVAS_WIDTH - PADDING - CIRCLE_RADIUS
+        : PADDING + dx * row + row * CIRCLE_DIAMETER + CIRCLE_RADIUS;
+
     const y =
       column === 0
-        ? PADDING
+        ? PADDING + CIRCLE_RADIUS
         : column === columns - 1
-        ? CANVAS_HEIGHT - PADDING
-        : dy * column + CIRCLE_DIAMETER;
+        ? CANVAS_HEIGHT - PADDING - CIRCLE_RADIUS
+        : PADDING + dy * column + column * CIRCLE_DIAMETER + CIRCLE_RADIUS;
     return { x, y };
   }
 

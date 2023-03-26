@@ -17,12 +17,12 @@ export const BoardConfigs: BoardConfig[] = [
     obstacles: [
       {
         from: {
-          row: 1,
-          column: 2,
+          row: 0,
+          column: 3,
         },
         to: {
-          row: 2,
-          column: 2,
+          row: 1,
+          column: 3,
         },
       },
 
@@ -33,6 +33,17 @@ export const BoardConfigs: BoardConfig[] = [
         },
         to: {
           row: 2,
+          column: 3,
+        },
+      },
+
+      {
+        from: {
+          row: 1,
+          column: 2,
+        },
+        to: {
+          row: 1,
           column: 3,
         },
       },
@@ -48,39 +59,6 @@ export const BoardConfigs: BoardConfig[] = [
     columns: 6,
     label: BoardSizeLabel.SixBySix,
     obstacles: [
-      // {
-      //   from: {
-      //     row: 0,
-      //     column: 3,
-      //   },
-      //   to: {
-      //     row: 0,
-      //     column: 2,
-      //   },
-      // },
-
-      // {
-      //   from: {
-      //     row: 1,
-      //     column: 3,
-      //   },
-      //   to: {
-      //     row: 1,
-      //     column: 2,
-      //   },
-      // },
-
-      // {
-      //   from: {
-      //     row: 2,
-      //     column: 3,
-      //   },
-      //   to: {
-      //     row: 2,
-      //     column: 2,
-      //   },
-      // },
-
       {
         from: {
           row: 2,

@@ -26,6 +26,7 @@ export const BoardContextProvider = ({
       rows: startingConfig.rows,
       columns: startingConfig.columns,
       label: startingConfig.label,
+      // obstacles: startingConfig.obstacles,
     })
   );
   const [boardSize, setBoardSize] =
