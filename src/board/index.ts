@@ -135,6 +135,7 @@ export class Board {
     const context = this.getContext();
     for (const block of this.boardConfig.obstacles) {
       const { from, to } = block;
+      const halObstacleWidth = (OBSTACLE_WIDTH - 1) / 2;
 
       const isVertical = from.row !== to.row;
 
@@ -144,7 +145,7 @@ export class Board {
         const start = this.getBoardCellCoordinates(from.row, from.column);
         const end = this.getBoardCellCoordinates(to.row, to.column + 1);
 
-        const xOffset = (end.x - start.x - 5) / 2 + 2.5;
+        const xOffset = (end.x - start.x - 5) / 2 + halObstacleWidth;
 
         const yOffset = (end.y - start.y) / 2;
         context.moveTo(start.x + xOffset, start.y - yOffset);
@@ -156,10 +157,13 @@ export class Board {
         const xOffset = (end.x - start.x) / 2;
 
         const yOffset =
-          (start.y - end.y - OBSTACLE_WIDTH) / 2 + OBSTACLE_WIDTH / 2;
+          (start.y - end.y - OBSTACLE_WIDTH - 1) / 2 + halObstacleWidth;
 
-        context.moveTo(start.x - xOffset - 2, end.y + yOffset);
-        context.lineTo(start.x + xOffset + 2, end.y + yOffset);
+        context.moveTo(
+          start.x - xOffset - halObstacleWidth - 1,
+          end.y + yOffset
+        );
+        context.lineTo(start.x + xOffset + halObstacleWidth, end.y + yOffset);
       }
 
       context.lineWidth = OBSTACLE_WIDTH;
