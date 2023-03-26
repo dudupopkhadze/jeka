@@ -14,6 +14,18 @@ export const BoardConfigs: BoardConfig[] = [
     rows: 4,
     columns: 4,
     label: BoardSizeLabel.FourByFour,
+    boneLocations: [
+      {
+        row: 1,
+        column: 2,
+        count: 1,
+      },
+      {
+        row: 2,
+        column: 2,
+        count: 1,
+      },
+    ],
     obstacles: [
       {
         from: {

@@ -6,6 +6,7 @@ import {
   CIRCLE_RADIUS,
   OBSTACLE_WIDTH,
 } from "../config";
+import { BoneManager } from "../engine/Bone";
 import { Jeka } from "../engine/Jeka";
 import { BoardConfig } from "../types";
 import { jekaFacingToAngle } from "../utils";
@@ -14,6 +15,7 @@ export class Board {
   private canvas?: HTMLCanvasElement;
   private boardConfig: BoardConfig;
   private jeka?: Jeka;
+  private boneManager?: BoneManager;
   private isWordInitialized = false;
   private blockedRoutes = new Set<string>();
 
@@ -22,8 +24,13 @@ export class Board {
     this.blockedRoutesFromConfig();
   }
 
-  setJeka = (jeka: Jeka) => {
+  registerJeka = (jeka: Jeka) => {
     this.jeka = jeka;
+  };
+
+  registerBoneManager = (boneManager: BoneManager) => {
+    this.boneManager = boneManager;
+    this.boneManager.updateProvidedLocations(this.boardConfig.boneLocations);
   };
 
   setBoard(board: BoardConfig) {
@@ -101,7 +108,27 @@ export class Board {
     this.drawDots();
     this.drawObstacles();
 
+    this.drawBones();
+
     this.isWordInitialized = true;
+  }
+
+  private drawBones() {
+    if (!this.boneManager || !this.boardConfig.boneLocations?.length) return;
+    const ctx = this.getContext();
+
+    this.boardConfig.boneLocations.forEach((location) => {
+      const hasBone = this.boneManager!.hasBone(location.row, location.column);
+      console.log(hasBone);
+      if (hasBone) {
+        const { x, y } = this.getJekaCoordinatesForRowAndColumn(
+          location.row,
+          location.column
+        );
+
+        ctx.drawImage(this.boneManager!.svg, x, y);
+      }
+    });
   }
 
   private drawDots() {

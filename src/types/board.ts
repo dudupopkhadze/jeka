@@ -1,11 +1,7 @@
-type Line = {
-  afterRow: number;
-  afterColumn: number;
-};
 export interface IBoard {
   rows: number;
   columns: number;
-
+  boneLocations?: { row: number; column: number; count: number }[];
   obstacles?: {
     from: { row: number; column: number };
     to: { row: number; column: number };

@@ -40,17 +40,17 @@ export class BoneManager {
 
   canPickBone(row: number, column: number): boolean {
     const boneCount = this.boardLocations.get(`${row}:${column}`);
-    return boneCount ? boneCount > 0 : false;
+    return boneCount !== undefined ? boneCount > 0 : false;
   }
 
   canPickBoneLive(row: number, column: number): boolean {
     const boneCount = this.liveLocations.get(`${row}:${column}`);
-    return boneCount ? boneCount > 0 : false;
+    return boneCount !== undefined ? boneCount > 0 : false;
   }
 
   putBone(row: number, column: number): void {
     const boneCount = this.boardLocations.get(`${row}:${column}`);
-    if (boneCount) {
+    if (boneCount !== undefined) {
       this.boardLocations.set(`${row}:${column}`, boneCount + 1);
     } else {
       this.boardLocations.set(`${row}:${column}`, 1);
@@ -59,7 +59,7 @@ export class BoneManager {
 
   putBoneLive(row: number, column: number): void {
     const boneCount = this.liveLocations.get(`${row}:${column}`);
-    if (boneCount) {
+    if (boneCount !== undefined) {
       this.liveLocations.set(`${row}:${column}`, boneCount + 1);
     } else {
       this.liveLocations.set(`${row}:${column}`, 1);
@@ -67,10 +67,15 @@ export class BoneManager {
   }
 
   updateProvidedLocations(
-    providedLocations: { row: number; column: number; count: number }[]
+    providedLocations?: { row: number; column: number; count: number }[]
   ) {
     this.providedLocations = providedLocations;
     this.initLocations();
+  }
+
+  hasBone(row: number, column: number): boolean {
+    const boneCount = this.boardLocations.get(`${row}:${column}`);
+    return boneCount === undefined ? false : boneCount > 0;
   }
 
   private initLocations() {

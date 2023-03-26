@@ -9,6 +9,7 @@ import {
   jekaFacingToAngle,
 } from "../utils";
 import { AudioManager } from "./AudioManager";
+import { BoneManager } from "./Bone";
 import { Jeka } from "./Jeka";
 
 type ErrorHandler = (error: string | null) => void;
@@ -28,6 +29,7 @@ export class Engine {
   private onError: ErrorHandler;
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
   private jeka: Jeka;
+  private boneManager: BoneManager;
   private jekaCallbackFired = false;
   private frontIsClearCalledTimes = 0;
 
@@ -52,13 +54,25 @@ export class Engine {
       },
     });
 
-    this.board.setJeka(this.jeka);
+    this.boneManager = new BoneManager({
+      onLoad: () => this.onBoneSvgLoaded.bind(this),
+      onError: () => {
+        this.onError("Bone svg failed to load, refresh the page");
+      },
+    });
+
+    this.board.registerJeka(this.jeka);
+    this.board.registerBoneManager(this.boneManager);
   }
 
   private onJekaLoad = () => {
     if (this.jekaCallbackFired) return;
 
     this.jekaCallbackFired = true;
+    this.prepareForExecution();
+  };
+
+  private onBoneSvgLoaded = () => {
     this.prepareForExecution();
   };
 
