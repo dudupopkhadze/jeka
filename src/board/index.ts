@@ -4,6 +4,7 @@ import {
   PADDING,
   CANVAS_HEIGHT,
   CIRCLE_RADIUS,
+  OBSTACLE_WIDTH,
 } from "../config";
 import { Jeka } from "../engine/Jeka";
 import { BoardConfig } from "../types";
@@ -14,9 +15,11 @@ export class Board {
   private boardConfig: BoardConfig;
   private jeka?: Jeka;
   private isWordInitialized = false;
+  private blockedRoutes = new Set<string>();
 
   constructor(boardConfig: BoardConfig) {
     this.boardConfig = boardConfig;
+    this.blockedRoutesFromConfig();
   }
 
   setJeka = (jeka: Jeka) => {
@@ -25,6 +28,7 @@ export class Board {
 
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
+    this.blockedRoutesFromConfig();
     if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
   }
 
@@ -40,9 +44,18 @@ export class Board {
     return this.isWordInitialized;
   }
 
-  validateJekaMove(nextRow: number, nextColumn: number) {
+  validateJekaMove(
+    nextRow: number,
+    nextColumn: number,
+    cur?: { row: number; column: number }
+  ) {
     if (nextRow < 0 || nextRow >= this.boardConfig.rows) return false;
     if (nextColumn < 0 || nextColumn >= this.boardConfig.columns) return false;
+    if (cur) {
+      return !this.blockedRoutes.has(
+        `${cur.row},${cur.column}:${nextRow}${nextColumn}`
+      );
+    }
     return true;
   }
 
@@ -85,6 +98,13 @@ export class Board {
   drawWorld() {
     if (!this.jeka?.jekaSvgIsLoaded) return;
 
+    this.drawDots();
+    this.drawObstacles();
+
+    this.isWordInitialized = true;
+  }
+
+  private drawDots() {
     const context = this.getContext();
 
     for (let i = 0; i < this.boardConfig.rows; i++) {
@@ -95,8 +115,61 @@ export class Board {
         context.fill();
       }
     }
+  }
 
-    this.isWordInitialized = true;
+  private blockedRoutesFromConfig = () => {
+    this.blockedRoutes.clear();
+    if (!this.boardConfig.obstacles?.length) {
+      return;
+    }
+
+    this.boardConfig.obstacles.forEach((obstacle) => {
+      this.blockedRoutes.add(
+        `${obstacle.from.row},${obstacle.from.column}:${obstacle.to.row}${obstacle.to.column}`
+      );
+    });
+  };
+
+  private drawObstacles() {
+    if (!this.boardConfig.obstacles) return;
+    const context = this.getContext();
+    for (const block of this.boardConfig.obstacles) {
+      const { from, to } = block;
+      const halObstacleWidth = (OBSTACLE_WIDTH - 1) / 2;
+
+      const isVertical = from.row !== to.row;
+
+      context.beginPath(); // Start a new path
+
+      if (isVertical) {
+        const start = this.getBoardCellCoordinates(from.row, from.column);
+        const end = this.getBoardCellCoordinates(to.row, to.column + 1);
+
+        const xOffset = (end.x - start.x - 5) / 2 + halObstacleWidth;
+
+        const yOffset = (end.y - start.y) / 2;
+        context.moveTo(start.x + xOffset, start.y - yOffset);
+        context.lineTo(start.x + xOffset, start.y + yOffset);
+      } else {
+        const start = this.getBoardCellCoordinates(from.row, from.column);
+        const end = this.getBoardCellCoordinates(to.row + 1, to.column);
+
+        const xOffset = (end.x - start.x) / 2;
+
+        const yOffset =
+          (start.y - end.y - OBSTACLE_WIDTH - 1) / 2 + halObstacleWidth;
+
+        context.moveTo(
+          start.x - xOffset - halObstacleWidth - 1,
+          end.y + yOffset
+        );
+        context.lineTo(start.x + xOffset + halObstacleWidth, end.y + yOffset);
+      }
+
+      context.lineWidth = OBSTACLE_WIDTH;
+      context.stroke();
+      context.restore();
+    }
   }
 
   private getContext() {
@@ -108,21 +181,24 @@ export class Board {
   private getBoardCellCoordinates(row: number, column: number) {
     const { rows, columns } = this.boardConfig;
 
-    const dx = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (rows - 1);
-    const dy = (CANVAS_WIDTH - 2 * CIRCLE_DIAMETER) / (columns - 1);
+    const dx =
+      (CANVAS_WIDTH - rows * CIRCLE_DIAMETER - 2 * PADDING) / (rows - 1);
+    const dy =
+      (CANVAS_HEIGHT - columns * CIRCLE_DIAMETER - 2 * PADDING) / (columns - 1);
 
     const x =
       row === 0
-        ? PADDING
+        ? PADDING + CIRCLE_RADIUS
         : row === rows - 1
-        ? CANVAS_WIDTH - PADDING
-        : dx * row + CIRCLE_DIAMETER;
+        ? CANVAS_WIDTH - PADDING - CIRCLE_RADIUS
+        : PADDING + dx * row + row * CIRCLE_DIAMETER + CIRCLE_RADIUS;
+
     const y =
       column === 0
-        ? PADDING
+        ? PADDING + CIRCLE_RADIUS
         : column === columns - 1
-        ? CANVAS_HEIGHT - PADDING
-        : dy * column + CIRCLE_DIAMETER;
+        ? CANVAS_HEIGHT - PADDING - CIRCLE_RADIUS
+        : PADDING + dy * column + column * CIRCLE_DIAMETER + CIRCLE_RADIUS;
     return { x, y };
   }
 
