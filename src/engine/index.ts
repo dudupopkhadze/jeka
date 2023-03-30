@@ -9,6 +9,7 @@ import {
   jekaFacingToAngle,
 } from "../utils";
 import { AudioManager } from "./AudioManager";
+import { BoneManager } from "./Bone";
 import { Jeka } from "./Jeka";
 
 type ErrorHandler = (error: string | null) => void;
@@ -28,6 +29,7 @@ export class Engine {
   private onError: ErrorHandler;
   private timeouts: { id: string; timeout: NodeJS.Timeout }[] = [];
   private jeka: Jeka;
+  private boneManager: BoneManager;
   private jekaCallbackFired = false;
   private frontIsClearCalledTimes = 0;
 
@@ -52,13 +54,25 @@ export class Engine {
       },
     });
 
-    this.board.setJeka(this.jeka);
+    this.boneManager = new BoneManager({
+      onLoad: () => this.onBoneSvgLoaded.bind(this),
+      onError: () => {
+        this.onError("Bone svg failed to load, refresh the page");
+      },
+    });
+
+    this.board.registerJeka(this.jeka);
+    this.board.registerBoneManager(this.boneManager);
   }
 
   private onJekaLoad = () => {
     if (this.jekaCallbackFired) return;
 
     this.jekaCallbackFired = true;
+    this.prepareForExecution();
+  };
+
+  private onBoneSvgLoaded = () => {
     this.prepareForExecution();
   };
 
@@ -106,11 +120,48 @@ export class Engine {
         return isValid;
       },
     });
+
+    env.define(JekaInstruction.HAS_BONES, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        if (this.frontIsClearCalledTimes > MAX_WHILE_LOOP) {
+          this.setErrorState("Possible infinite loop detected");
+          return;
+        }
+        this.frontIsClearCalledTimes++;
+        const hasBones = this.boneManager.hasBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+        console.log(hasBones);
+
+        return hasBones;
+      },
+    });
+
+    env.define(JekaInstruction.PICK_BONE, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.delayedProcessSingleInstruction(JekaInstruction.PICK_BONE);
+      },
+    });
+
+    env.define(JekaInstruction.PUT_BONE, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.delayedProcessSingleInstruction(JekaInstruction.PUT_BONE);
+      },
+    });
   }
 
   async process(input: string) {
     this.prepareForExecution();
-
     this.mustang.run(input);
   }
 
@@ -138,12 +189,17 @@ export class Engine {
       this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
       this.timeouts = [];
     }
+    this.boneManager.reset();
     this.jeka.resetCoordinates();
+    this.resetBoard();
+    this.clearErrorState();
+    this.mustang.clearState();
+  }
+
+  private resetBoard() {
     this.board.clearBoard();
     this.board.drawWorld();
     this.board.drawJekaWithBoardPosition();
-    this.clearErrorState();
-    this.mustang.clearState();
   }
 
   private setErrorState(error: string) {
@@ -185,6 +241,23 @@ export class Engine {
           ),
         };
         break;
+      case JekaInstruction.PICK_BONE:
+        this.boneManager.pickBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+
+        this.boneManager.addBoneToBagLive();
+        break;
+
+      case JekaInstruction.PUT_BONE:
+        this.boneManager.putBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+
+        this.boneManager.removeBoneFromBagLive();
+        break;
 
       default:
         break;
@@ -220,10 +293,50 @@ export class Engine {
       case JekaInstruction.WOOF:
         this.processWoof();
         break;
+      case JekaInstruction.PUT_BONE:
+        this.processPutBone();
+        break;
+      case JekaInstruction.PICK_BONE:
+        this.processPickBone();
+        break;
 
       default:
         break;
     }
+  }
+
+  private processPickBone() {
+    if (
+      !this.boneManager.hasBone(
+        this.jeka.boardCoordinates.row,
+        this.jeka.boardCoordinates.column
+      )
+    ) {
+      return this.handleError("No bones at current position");
+    }
+    this.boneManager.pickBone(
+      this.jeka.boardCoordinates.row,
+      this.jeka.boardCoordinates.column
+    );
+
+    this.boneManager.addBoneToBag();
+
+    this.resetBoard();
+  }
+
+  private processPutBone() {
+    if (!this.boneManager.hasBonesInBag()) {
+      return this.handleError("Jeka has no bones in bag");
+    }
+
+    this.boneManager.putBone(
+      this.jeka.boardCoordinates.row,
+      this.jeka.boardCoordinates.column
+    );
+
+    this.boneManager.removeBoneFromBag();
+
+    this.resetBoard();
   }
 
   private processWoof() {

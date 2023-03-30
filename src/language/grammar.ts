@@ -23,7 +23,7 @@ export const JekaGrammar = `
       
       LineComment { "//" ![\n]* }
 
-      JekaExpression { "turnLeft" | "moveForward" | "woof" | "frontIsClear" }
+      JekaExpression { "turnLeft" | "moveForward" | "woof" | "frontIsClear" | "pickBone" | "putBone" | "hasBones" }
     
       Number { @digit+ }
 

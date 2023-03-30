@@ -6,6 +6,7 @@ import {
   CIRCLE_RADIUS,
   OBSTACLE_WIDTH,
 } from "../config";
+import { BoneManager } from "../engine/Bone";
 import { Jeka } from "../engine/Jeka";
 import { BoardConfig } from "../types";
 import { jekaFacingToAngle } from "../utils";
@@ -14,21 +15,29 @@ export class Board {
   private canvas?: HTMLCanvasElement;
   private boardConfig: BoardConfig;
   private jeka?: Jeka;
+  private boneManager?: BoneManager;
   private isWordInitialized = false;
   private blockedRoutes = new Set<string>();
 
   constructor(boardConfig: BoardConfig) {
     this.boardConfig = boardConfig;
-    this.blockedRoutesFromConfig();
+    this.setupBlockedRoutesFromConfig();
   }
 
-  setJeka = (jeka: Jeka) => {
+  registerJeka = (jeka: Jeka) => {
     this.jeka = jeka;
+  };
+
+  registerBoneManager = (boneManager: BoneManager) => {
+    this.boneManager = boneManager;
+    this.boneManager.updateProvidedLocations(this.boardConfig.boneLocations);
   };
 
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
-    this.blockedRoutesFromConfig();
+    this.setupBlockedRoutesFromConfig();
+    if (this.boardConfig.boneLocations?.length)
+      this.boneManager?.updateProvidedLocations(this.boardConfig.boneLocations);
     if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
   }
 
@@ -101,7 +110,29 @@ export class Board {
     this.drawDots();
     this.drawObstacles();
 
+    this.drawBones();
+
     this.isWordInitialized = true;
+  }
+
+  private drawBones() {
+    if (!this.boneManager || !this.boardConfig.boneLocations?.length) return;
+    const ctx = this.getContext();
+
+    for (let i = 0; i < this.boardConfig.rows; i++) {
+      for (let j = 0; j < this.boardConfig.columns; j++) {
+        const bones = new Array(this.boneManager!.bonesAt(i, j)).fill(0);
+        if (!bones.length) continue;
+        const { x, y } = this.getJekaCoordinatesForRowAndColumn(i, j);
+
+        ctx.drawImage(this.boneManager!.svg, x, y);
+
+        if (bones.length > 1) {
+          ctx.font = "15px Arial";
+          ctx.fillText(`${bones.length}`, x + 20, y + 13);
+        }
+      }
+    }
   }
 
   private drawDots() {
@@ -117,7 +148,7 @@ export class Board {
     }
   }
 
-  private blockedRoutesFromConfig = () => {
+  private setupBlockedRoutesFromConfig = () => {
     this.blockedRoutes.clear();
     if (!this.boardConfig.obstacles?.length) {
       return;

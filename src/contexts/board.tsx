@@ -26,6 +26,7 @@ export const BoardContextProvider = ({
       rows: startingConfig.rows,
       columns: startingConfig.columns,
       label: startingConfig.label,
+      // boneLocations: startingConfig.boneLocations,
       // obstacles: startingConfig.obstacles,
     })
   );

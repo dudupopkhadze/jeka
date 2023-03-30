@@ -9,6 +9,7 @@ export const BoardSizeSelector = () => {
   const { resetEngineState } = useEngine();
   const { boardSize, updateBoardConfig } = useBoard();
   const [obstaclesEnabled, setObstaclesEnabled] = useState(false);
+  const [bonesEnabled, setBonesEnabled] = useState(false);
   const selectedOption = {
     label: boardSize + " Board",
     value: boardSize,
@@ -28,15 +29,24 @@ export const BoardSizeSelector = () => {
     [boardSize]
   );
 
+  const hasBones = useMemo(
+    () =>
+      !!BoardConfigs.find((v) => v.label === boardSize)?.boneLocations?.length,
+    [boardSize]
+  );
+
   const updateBoard = ({
     providedLabel,
     obstacles,
+    bones,
   }: {
     providedLabel?: BoardSizeLabel;
     obstacles?: boolean;
+    bones?: boolean;
   }) => {
     const obstaclesIsEnabled =
       obstacles === undefined ? obstaclesEnabled : obstacles;
+    const bonesIsEnabled = bones === undefined ? bonesEnabled : bones;
     const value = providedLabel || boardSize;
     const config = BoardConfigs.find((v) => v.label === value);
     if (!config) return;
@@ -45,6 +55,7 @@ export const BoardSizeSelector = () => {
       columns: config.columns,
       label: config.label,
       obstacles: obstaclesIsEnabled ? config.obstacles : [],
+      boneLocations: bonesIsEnabled ? config.boneLocations : [],
     });
     resetEngineState();
   };
@@ -77,6 +88,20 @@ export const BoardSizeSelector = () => {
           }}
         />
         <span className="BoardSizeSelector-Checkbox-Label">Obstacles</span>
+      </div>
+
+      <div className="BoardSizeSelector-Checkbox ">
+        <input
+          type="checkbox"
+          disabled={!hasBones}
+          checked={bonesEnabled}
+          onChange={(e) => {
+            const newValue = !bonesEnabled;
+            setBonesEnabled((cur) => !cur);
+            updateBoard({ bones: newValue });
+          }}
+        />
+        <span className="BoardSizeSelector-Checkbox-Label">Bones</span>
       </div>
     </div>
   );
