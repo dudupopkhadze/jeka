@@ -13,6 +13,8 @@ export class BoneManager {
   liveLocations = new Map<string, number>();
   providedLocations?: { row: number; column: number; count: number }[];
   size = BONE_SIZE;
+  bonesInBagBoard = 0;
+  bonesInBagLive = 0;
 
   constructor(config: Config) {
     this.svg = new Image();
@@ -57,7 +59,7 @@ export class BoneManager {
   pickBoneLive(row: number, column: number): void {
     const boneCount = this.liveLocations.get(`${row}:${column}`);
     if (boneCount === undefined) throw new Error("No bones at this location");
-    this.boardLocations.set(`${row}:${column}`, boneCount - 1);
+    this.liveLocations.set(`${row}:${column}`, boneCount - 1);
   }
 
   putBone(row: number, column: number): void {
@@ -88,6 +90,37 @@ export class BoneManager {
   hasBone(row: number, column: number): boolean {
     const boneCount = this.boardLocations.get(`${row}:${column}`);
     return boneCount === undefined ? false : boneCount > 0;
+  }
+
+  hasBoneLive(row: number, column: number): boolean {
+    console.log(this.liveLocations);
+    console.log(`${row}:${column}`);
+    const boneCount = this.liveLocations.get(`${row}:${column}`);
+    return boneCount === undefined ? false : boneCount > 0;
+  }
+
+  hasBonesInBag(): boolean {
+    return this.bonesInBagBoard > 0;
+  }
+
+  addBoneToBag() {
+    this.bonesInBagBoard++;
+  }
+
+  removeBoneFromBag() {
+    this.bonesInBagBoard--;
+  }
+
+  hasBonesInBagLive(): boolean {
+    return this.bonesInBagLive > 0;
+  }
+
+  removeBoneFromBagLive() {
+    this.bonesInBagLive--;
+  }
+
+  addBoneToBagLive() {
+    this.bonesInBagLive++;
   }
 
   bonesAt(row: number, column: number): number {

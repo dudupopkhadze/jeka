@@ -58,6 +58,7 @@ export const jekaAutoComplete = JekaLanguageDefined.data.of({
     { label: "fun", type: "keyword", info: "fun functionName() { }" },
     { label: "pickBone", type: "keyword", info: "pickBone()" },
     { label: "putBone", type: "keyword", info: "putBone()" },
+    { label: "hasBones", type: "keyword", info: "hasBones()" },
   ]),
 });
 

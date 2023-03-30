@@ -5,6 +5,7 @@ export enum JekaInstruction {
   FRONT_IS_CLEAR = "frontIsClear",
   PICK_BONE = "pickBone",
   PUT_BONE = "putBone",
+  HAS_BONES = "hasBones",
 }
 
 export enum JekaFacing {

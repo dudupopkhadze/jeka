@@ -121,6 +121,26 @@ export class Engine {
       },
     });
 
+    env.define(JekaInstruction.HAS_BONES, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        if (this.frontIsClearCalledTimes > MAX_WHILE_LOOP) {
+          this.setErrorState("Possible infinite loop detected");
+          return;
+        }
+        this.frontIsClearCalledTimes++;
+        const hasBones = this.boneManager.hasBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+        console.log(hasBones);
+
+        return hasBones;
+      },
+    });
+
     env.define(JekaInstruction.PICK_BONE, {
       arity: () => {
         return 0;
@@ -221,6 +241,23 @@ export class Engine {
           ),
         };
         break;
+      case JekaInstruction.PICK_BONE:
+        this.boneManager.pickBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+
+        this.boneManager.addBoneToBagLive();
+        break;
+
+      case JekaInstruction.PUT_BONE:
+        this.boneManager.putBoneLive(
+          this.jeka.liveCoordinates.row,
+          this.jeka.liveCoordinates.column
+        );
+
+        this.boneManager.removeBoneFromBagLive();
+        break;
 
       default:
         break;
@@ -269,21 +306,35 @@ export class Engine {
   }
 
   private processPickBone() {
-    // check is there a bone on location
+    if (
+      !this.boneManager.hasBone(
+        this.jeka.boardCoordinates.row,
+        this.jeka.boardCoordinates.column
+      )
+    ) {
+      return this.handleError("No bones at current position");
+    }
     this.boneManager.pickBone(
       this.jeka.boardCoordinates.row,
       this.jeka.boardCoordinates.column
     );
 
+    this.boneManager.addBoneToBag();
+
     this.resetBoard();
   }
 
   private processPutBone() {
-    // check is there a bone in the jeka's hand
+    if (!this.boneManager.hasBonesInBag()) {
+      return this.handleError("Jeka has no bones in bag");
+    }
+
     this.boneManager.putBone(
       this.jeka.boardCoordinates.row,
       this.jeka.boardCoordinates.column
     );
+
+    this.boneManager.removeBoneFromBag();
 
     this.resetBoard();
   }

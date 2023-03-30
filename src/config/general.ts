@@ -31,6 +31,10 @@ export const EditorStartingCode = `// available commands
 // turnRight();
 //}
 moveForward();
-putBone();
+turnLeft();
+moveForward();
+while(hasBones()){
+ pickBone();
+}
 moveForward();
 \n`;
