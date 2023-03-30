@@ -120,11 +120,28 @@ export class Engine {
         return isValid;
       },
     });
+
+    env.define(JekaInstruction.PICK_BONE, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.delayedProcessSingleInstruction(JekaInstruction.PICK_BONE);
+      },
+    });
+
+    env.define(JekaInstruction.PUT_BONE, {
+      arity: () => {
+        return 0;
+      },
+      call: () => {
+        this.delayedProcessSingleInstruction(JekaInstruction.PUT_BONE);
+      },
+    });
   }
 
   async process(input: string) {
     this.prepareForExecution();
-
     this.mustang.run(input);
   }
 
@@ -152,12 +169,17 @@ export class Engine {
       this.timeouts.forEach(({ timeout }) => clearTimeout(timeout));
       this.timeouts = [];
     }
+    this.boneManager.reset();
     this.jeka.resetCoordinates();
+    this.resetBoard();
+    this.clearErrorState();
+    this.mustang.clearState();
+  }
+
+  private resetBoard() {
     this.board.clearBoard();
     this.board.drawWorld();
     this.board.drawJekaWithBoardPosition();
-    this.clearErrorState();
-    this.mustang.clearState();
   }
 
   private setErrorState(error: string) {
@@ -234,10 +256,36 @@ export class Engine {
       case JekaInstruction.WOOF:
         this.processWoof();
         break;
+      case JekaInstruction.PUT_BONE:
+        this.processPutBone();
+        break;
+      case JekaInstruction.PICK_BONE:
+        this.processPickBone();
+        break;
 
       default:
         break;
     }
+  }
+
+  private processPickBone() {
+    // check is there a bone on location
+    this.boneManager.pickBone(
+      this.jeka.boardCoordinates.row,
+      this.jeka.boardCoordinates.column
+    );
+
+    this.resetBoard();
+  }
+
+  private processPutBone() {
+    // check is there a bone in the jeka's hand
+    this.boneManager.putBone(
+      this.jeka.boardCoordinates.row,
+      this.jeka.boardCoordinates.column
+    );
+
+    this.resetBoard();
   }
 
   private processWoof() {

@@ -21,7 +21,7 @@ export class Board {
 
   constructor(boardConfig: BoardConfig) {
     this.boardConfig = boardConfig;
-    this.blockedRoutesFromConfig();
+    this.setupBlockedRoutesFromConfig();
   }
 
   registerJeka = (jeka: Jeka) => {
@@ -35,7 +35,7 @@ export class Board {
 
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
-    this.blockedRoutesFromConfig();
+    this.setupBlockedRoutesFromConfig();
     if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
   }
 
@@ -117,24 +117,20 @@ export class Board {
     if (!this.boneManager || !this.boardConfig.boneLocations?.length) return;
     const ctx = this.getContext();
 
-    this.boardConfig.boneLocations.forEach((location) => {
-      const bones = new Array(
-        this.boneManager!.bonesAt(location.row, location.column)
-      ).fill(0);
+    for (let i = 0; i < this.boardConfig.rows; i++) {
+      for (let j = 0; j < this.boardConfig.columns; j++) {
+        const bones = new Array(this.boneManager!.bonesAt(i, j)).fill(0);
+        if (!bones.length) continue;
+        const { x, y } = this.getJekaCoordinatesForRowAndColumn(i, j);
 
-      if (!bones.length) return;
-      const { x, y } = this.getJekaCoordinatesForRowAndColumn(
-        location.row,
-        location.column
-      );
+        ctx.drawImage(this.boneManager!.svg, x, y);
 
-      ctx.drawImage(this.boneManager!.svg, x, y);
-
-      if (bones.length > 1) {
-        ctx.font = "15px Arial";
-        ctx.fillText(`${bones.length}`, x + 20, y + 13);
+        if (bones.length > 1) {
+          ctx.font = "15px Arial";
+          ctx.fillText(`${bones.length}`, x + 20, y + 13);
+        }
       }
-    });
+    }
   }
 
   private drawDots() {
@@ -150,7 +146,7 @@ export class Board {
     }
   }
 
-  private blockedRoutesFromConfig = () => {
+  private setupBlockedRoutesFromConfig = () => {
     this.blockedRoutes.clear();
     if (!this.boardConfig.obstacles?.length) {
       return;

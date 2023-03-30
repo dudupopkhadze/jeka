@@ -48,6 +48,18 @@ export class BoneManager {
     return boneCount !== undefined ? boneCount > 0 : false;
   }
 
+  pickBone(row: number, column: number): void {
+    const boneCount = this.boardLocations.get(`${row}:${column}`);
+    if (boneCount === undefined) throw new Error("No bones at this location");
+    this.boardLocations.set(`${row}:${column}`, boneCount - 1);
+  }
+
+  pickBoneLive(row: number, column: number): void {
+    const boneCount = this.liveLocations.get(`${row}:${column}`);
+    if (boneCount === undefined) throw new Error("No bones at this location");
+    this.boardLocations.set(`${row}:${column}`, boneCount - 1);
+  }
+
   putBone(row: number, column: number): void {
     const boneCount = this.boardLocations.get(`${row}:${column}`);
     if (boneCount !== undefined) {
@@ -81,6 +93,10 @@ export class BoneManager {
   bonesAt(row: number, column: number): number {
     const boneCount = this.boardLocations.get(`${row}:${column}`);
     return boneCount === undefined ? 0 : boneCount;
+  }
+
+  reset() {
+    this.initLocations();
   }
 
   private initLocations() {
