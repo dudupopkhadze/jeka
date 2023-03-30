@@ -29,12 +29,4 @@ export const EditorStartingCode = `// available commands
 // while(frontIsClear()){
 // moveForward();
 // turnRight();
-//}
-moveForward();
-turnLeft();
-moveForward();
-while(hasBones()){
- pickBone();
-}
-moveForward();
-\n`;
+//}\n`;

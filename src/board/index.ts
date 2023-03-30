@@ -36,6 +36,8 @@ export class Board {
   setBoard(board: BoardConfig) {
     this.boardConfig = board;
     this.setupBlockedRoutesFromConfig();
+    if (this.boardConfig.boneLocations?.length)
+      this.boneManager?.updateProvidedLocations(this.boardConfig.boneLocations);
     if (this.jeka) this.jeka.setStartAt(0, this.boardConfig.columns - 1);
   }
 
