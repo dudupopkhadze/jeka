@@ -1,33 +1,18 @@
-import {
-  Board,
-  CodeInput,
-  Header,
-  DelaySlider,
-  Configuration,
-} from "./components";
-import {
-  BoardContextProvider,
-  CodeControllerContextProvider,
-  EngineContextProvider,
-} from "./contexts";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./styles/App.css";
+import Root from "./screens/root";
+import Docs from "./screens/docs";
+
+const router = createBrowserRouter([
+  { path: "/", element: <Root /> },
+  { path: "/docs", element: <Docs /> },
+]);
 
 function App() {
   return (
-    <CodeControllerContextProvider>
-      <BoardContextProvider>
-        <EngineContextProvider>
-          <div className="App">
-            <Header />
-            <Configuration />
-            <div className="App-Container">
-              <CodeInput />
-              <Board />
-            </div>
-          </div>
-        </EngineContextProvider>
-      </BoardContextProvider>
-    </CodeControllerContextProvider>
+    <div className="App">
+      <RouterProvider router={router} />
+    </div>
   );
 }
 

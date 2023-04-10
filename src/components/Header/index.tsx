@@ -1,7 +1,6 @@
 import React from "react";
 import "./style.css";
 import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
-import { ReactComponent as DOG } from "../../svgs/dog.svg";
 import { useCodeController } from "../../hooks";
 import { JekaInstruction } from "../../types";
 import { useEngine } from "../../hooks/useEngine";
