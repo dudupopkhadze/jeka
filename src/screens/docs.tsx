@@ -1,7 +1,7 @@
+import React from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
-import "../styles/Docs.css";
-import React, { useEffect } from "react";
 import { ReactComponent as PlaySVG } from "../svgs/play.svg";
+import "../styles/Docs.css";
 
 import {
   CodeControllerContextProvider,
@@ -10,30 +10,46 @@ import {
 } from "../contexts";
 import { Board } from "../components";
 import { BoardConfigs } from "../config";
-import { BoardSizeLabel, JekaInstruction } from "../types";
+import { BoardConfig, BoardSizeLabel, JekaInstruction } from "../types";
 import { useEngine } from "../hooks";
 
 const docs = [
   {
     command: "moveForward",
-    code: `//move forward command \nmoveForward();`,
+    code: `//jeka moves forward \nmoveForward();`,
     description:
       "This command moves jeka forward with one pile in the facing direction",
+    instructions: [JekaInstruction.MOVE_FORWARD],
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
   },
   {
-    command: "turnRight",
-    code: `//turns jeka right \nturnRight();`,
-    description: "This command turn jeka right from the facing direction",
+    command: "turnLeft",
+    code: `//jeka turns left \nturnLeft();`,
+    description: "This command turns jeka left from the facing direction",
+    instructions: [JekaInstruction.TURN_LEFT],
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
   },
   {
     command: "putBone",
-    code: `//turns jeka right \nputBone();`,
-    description: "This command turn jeka right from the facing direction",
+    code: `//jeka puts the bone \nputBone();`,
+    description: "With this command jeka puts bone on the current pile",
+    instructions: [JekaInstruction.PUT_BONE],
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
   },
   {
     command: "pickBone",
-    code: `//turns jeka right \npickBone();`,
-    description: "This command turn jeka right from the facing direction",
+    code: `//jeka picks the bone \npickBone();`,
+    description: "With this command jeka picks bone from the current pile",
+    instructions: [JekaInstruction.PICK_BONE],
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
   },
 ];
 
@@ -42,65 +58,72 @@ export default function Docs() {
     <div className="Docs">
       <span className="Docs-Logo">🐶</span>
       <h1 className="Docs-Title">Welcome to the Jeka API</h1>
-      {docs.map(({ code, command, description }, i) => (
-        <React.Fragment key={command}>
-          {i !== 0 && <hr className="Docs-Hr" />}
-          <div className="Docs-Section">
-            <p className="Docs-Section-Title">
-              Command name -{" "}
-              <span className="Docs-Section-Title-Command"> {command} </span>
-            </p>
-            <div className="Docs-Section-Code">
-              <CodeBlock
-                text={code}
-                language="javascript"
-                theme={dracula}
-                showLineNumbers
+      {docs.map(
+        ({ code, command, description, instructions, boardConfig }, i) => (
+          <React.Fragment key={command}>
+            {i !== 0 && <hr className="Docs-Hr" />}
+            <div className="Docs-Section">
+              <p className="Docs-Section-Title">
+                Command name -{" "}
+                <span className="Docs-Section-Title-Command"> {command} </span>
+              </p>
+              <div className="Docs-Section-Code">
+                <CodeBlock
+                  text={code}
+                  language="javascript"
+                  theme={dracula}
+                  showLineNumbers
+                />
+              </div>
+
+              <p className="Docs-Section-Description ">{description}</p>
+
+              <DemoWrapper
+                instructions={instructions}
+                boardConfig={boardConfig}
               />
             </div>
-
-            <p className="Docs-Section-Description ">{description}</p>
-
-            {i === 0 && <ExampleWrapper />}
-          </div>
-        </React.Fragment>
-      ))}
+          </React.Fragment>
+        )
+      )}
     </div>
   );
 }
 
-const ExampleWrapper = () => {
+const DemoWrapper = ({
+  instructions,
+  boardConfig,
+}: {
+  instructions: JekaInstruction[];
+  boardConfig: BoardConfig;
+}) => {
   return (
     <CodeControllerContextProvider>
       <BoardContextProvider
-        startingConfig={
-          BoardConfigs.find(({ label }) => label === BoardSizeLabel.TwoByTwo)!
-        }
+        startingConfig={boardConfig}
         height={200}
         width={200}
       >
         <EngineContextProvider>
-          <Example />
+          <Demo instructions={instructions} />
         </EngineContextProvider>
       </BoardContextProvider>
     </CodeControllerContextProvider>
   );
 };
 
-const Example = () => {
+const Demo = ({ instructions }: { instructions: JekaInstruction[] }) => {
   const { processDirectInstructions, resetEngineState } = useEngine();
 
   return (
     <div className="Docs-Board-Container">
       <div className="Docs-Board-Controls">
         <button
-          onClick={() =>
-            processDirectInstructions([JekaInstruction.MOVE_FORWARD])
-          }
+          onClick={() => processDirectInstructions(instructions)}
           className="Header-Compile"
         >
           <PlaySVG className="Header-Compile-Icon" />
-          Run
+          Execute
         </button>
         <button
           onClick={() => resetEngineState()}
