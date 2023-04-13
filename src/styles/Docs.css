@@ -1,0 +1,58 @@
+.Docs {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+}
+
+.Docs-Logo {
+  font-size: 200px;
+  line-height: 200px;
+}
+
+.Docs-Title {
+  color: white;
+  font-size: 50px;
+  line-height: 50px;
+  margin: 0px;
+  margin-top: 30px;
+}
+
+.Docs-Section {
+  display: flex;
+  width: 100%;
+  max-width: 640px;
+  flex-direction: column;
+  color: white;
+  margin-top: 35px;
+}
+
+.Docs-Section-Code {
+  padding: 10px;
+  background-color: #695bcd;
+  border-radius: 5px;
+}
+
+.Docs-Section-Title {
+  font-size: 30px;
+  line-height: 30px;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+.Docs-Section-Description {
+  font-size: 23px;
+  line-height: 30px;
+  margin: 0px;
+  margin-top: 20px;
+}
+
+.Docs-Section-Title-Command {
+  font-weight: 600;
+  font-style: italic;
+  margin: 0px;
+  margin-bottom: 20px;
+  color: rgb(80, 250, 123);
+}
