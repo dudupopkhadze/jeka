@@ -12,12 +12,20 @@
   line-height: 200px;
 }
 
+.Docs-Hr {
+  width: 300px;
+  margin: 25px 0px;
+  border: 0;
+  border-top: 1px solid #c33cc3;
+}
+
 .Docs-Title {
   color: white;
   font-size: 50px;
   line-height: 50px;
   margin: 0px;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .Docs-Section {
@@ -26,7 +34,6 @@
   max-width: 640px;
   flex-direction: column;
   color: white;
-  margin-top: 35px;
 }
 
 .Docs-Section-Code {
@@ -55,4 +62,32 @@
   margin: 0px;
   margin-bottom: 20px;
   color: rgb(80, 250, 123);
+}
+
+.Docs-Board-Container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Docs-Board-Wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Docs-Board-Controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.Docs-Board-Controls-Control {
+  margin-top: 20px;
+}
+
+.Docs-Board-Canvas {
+  background-color: white;
+  border-radius: 20px;
 }

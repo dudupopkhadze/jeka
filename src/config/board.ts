@@ -11,6 +11,14 @@ export const StartingBoardLabel = BoardSizeLabel.FourByFour;
 
 export const BoardConfigs: BoardConfig[] = [
   {
+    rows: 2,
+    columns: 2,
+    label: BoardSizeLabel.TwoByTwo,
+    boneLocations: [],
+    obstacles: [],
+  },
+
+  {
     rows: 4,
     columns: 4,
     label: BoardSizeLabel.FourByFour,
