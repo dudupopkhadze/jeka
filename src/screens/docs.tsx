@@ -59,7 +59,7 @@ const docs = [
   },
   {
     command: "360 degrees turn",
-    code: `//jeka drifts \npickBone();\nmoveForward();\nputBone();`,
+    code: `//jeka drifts \nturnLeft();\nturnLeft();\nturnLeft();`,
     description:
       "With this command jeka does 360 degree turn on the current pile ",
     instructions: [
