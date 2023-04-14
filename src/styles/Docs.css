@@ -7,6 +7,28 @@
   padding-top: 100px;
 }
 
+.Docs-Back {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #f89d0f;
+  padding: 10px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Docs-Back-Icon {
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+}
+
 .Docs-Logo {
   font-size: 200px;
   line-height: 200px;

@@ -1,13 +1,14 @@
 import React from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { ReactComponent as PlaySVG } from "../svgs/play.svg";
+import { ReactComponent as ArrowSVG } from "../svgs/arrow.svg";
 import "../styles/Docs.css";
-
 import {
   CodeControllerContextProvider,
   BoardContextProvider,
   EngineContextProvider,
 } from "../contexts";
+import { Link } from "react-router-dom";
 import { Board } from "../components";
 import { BoardConfigs } from "../config";
 import { BoardConfig, BoardSizeLabel, JekaInstruction } from "../types";
@@ -58,8 +59,17 @@ const docs = [
     } as unknown as BoardConfig,
   },
   {
+    command: "woof",
+    code: `//jeka barks \nwoof();`,
+    description: "With this command jeka can make sound",
+    instructions: [JekaInstruction.WOOF],
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
+  },
+  {
     command: "360 degrees turn",
-    code: `//jeka drifts \nturnLeft();\nturnLeft();\nturnLeft();`,
+    code: `//jeka drifts \nturnLeft();\nturnLeft();\nturnLeft();\nturnLeft();`,
     description:
       "With this command jeka does 360 degree turn on the current pile ",
     instructions: [
@@ -84,11 +94,28 @@ const docs = [
       ({ label }) => label === BoardSizeLabel.TwoByTwo
     )!,
   },
+
+  {
+    command: "while(hasBones())",
+    code: `//jeka picks all available bones \nmoveForward();\nwhile(hasBones()){\n  pickBone();\n}\nturnLeft();\nmoveForward();`,
+    description:
+      "With this command jeka picks bones until none is left on the current pile",
+    instructions: [],
+    input:
+      "moveForward();\nwhile(hasBones()){\n  pickBone();\n}\nturnLeft();\nmoveForward();",
+    boardConfig: {
+      ...BoardConfigs.find(({ label }) => label === BoardSizeLabel.TwoByTwo)!,
+      boneLocations: [{ row: 1, column: 1, count: 3 }],
+    } as unknown as BoardConfig,
+  },
 ];
 
 export default function Docs() {
   return (
     <div className="Docs">
+      <Link className="Docs-Back" to={"/"}>
+        <ArrowSVG className="Docs-Back-Icon" /> Back
+      </Link>
       <span className="Docs-Logo">🐶</span>
       <h1 className="Docs-Title">Welcome to the Jeka API</h1>
       {docs.map(

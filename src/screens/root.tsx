@@ -5,6 +5,7 @@ import {
   CodeControllerContextProvider,
   EngineContextProvider,
 } from "../contexts";
+import { ReactComponent as DocsIcon } from "../svgs/docs.svg";
 
 function Root() {
   return (
@@ -16,6 +17,7 @@ function Root() {
             <Configuration />
             <div className="Link-Container">
               <Link className="Link-Container-Anchor" to="/docs">
+                <DocsIcon className="Link-Container-Anchor-Icon" />
                 Documentation
               </Link>
             </div>
