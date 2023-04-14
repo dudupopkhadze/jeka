@@ -1,9 +1,9 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import "./styles/App.css";
 import Root from "./screens/root";
 import Docs from "./screens/docs";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   { path: "/", element: <Root /> },
   { path: "/docs", element: <Docs /> },
 ]);

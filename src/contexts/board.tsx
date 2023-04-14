@@ -28,7 +28,7 @@ export const BoardContextProvider = (props: {
         rows: (props.startingConfig ?? startingConfig).rows,
         columns: (props.startingConfig ?? startingConfig).columns,
         label: (props.startingConfig ?? startingConfig).label,
-        // boneLocations: startingConfig.boneLocations,
+        boneLocations: props.startingConfig?.boneLocations,
         // obstacles: startingConfig.obstacles,
       },
       props.width,
