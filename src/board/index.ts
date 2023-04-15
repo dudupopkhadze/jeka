@@ -16,12 +16,20 @@ export class Board {
   private boardConfig: BoardConfig;
   private jeka?: Jeka;
   private boneManager?: BoneManager;
+  private width: number;
+  private height: number;
   private isWordInitialized = false;
   private blockedRoutes = new Set<string>();
 
-  constructor(boardConfig: BoardConfig) {
+  constructor(
+    boardConfig: BoardConfig,
+    width = CANVAS_WIDTH,
+    height = CANVAS_HEIGHT
+  ) {
     this.boardConfig = boardConfig;
     this.setupBlockedRoutesFromConfig();
+    this.width = width;
+    this.height = height;
   }
 
   registerJeka = (jeka: Jeka) => {
@@ -212,23 +220,22 @@ export class Board {
   private getBoardCellCoordinates(row: number, column: number) {
     const { rows, columns } = this.boardConfig;
 
-    const dx =
-      (CANVAS_WIDTH - rows * CIRCLE_DIAMETER - 2 * PADDING) / (rows - 1);
+    const dx = (this.width - rows * CIRCLE_DIAMETER - 2 * PADDING) / (rows - 1);
     const dy =
-      (CANVAS_HEIGHT - columns * CIRCLE_DIAMETER - 2 * PADDING) / (columns - 1);
+      (this.height - columns * CIRCLE_DIAMETER - 2 * PADDING) / (columns - 1);
 
     const x =
       row === 0
         ? PADDING + CIRCLE_RADIUS
         : row === rows - 1
-        ? CANVAS_WIDTH - PADDING - CIRCLE_RADIUS
+        ? this.width - PADDING - CIRCLE_RADIUS
         : PADDING + dx * row + row * CIRCLE_DIAMETER + CIRCLE_RADIUS;
 
     const y =
       column === 0
         ? PADDING + CIRCLE_RADIUS
         : column === columns - 1
-        ? CANVAS_HEIGHT - PADDING - CIRCLE_RADIUS
+        ? this.height - PADDING - CIRCLE_RADIUS
         : PADDING + dy * column + column * CIRCLE_DIAMETER + CIRCLE_RADIUS;
     return { x, y };
   }

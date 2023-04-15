@@ -69,7 +69,7 @@ export class Engine {
     if (this.jekaCallbackFired) return;
 
     this.jekaCallbackFired = true;
-    this.prepareForExecution();
+    setTimeout(() => this.prepareForExecution(), 0);
   };
 
   private onBoneSvgLoaded = () => {

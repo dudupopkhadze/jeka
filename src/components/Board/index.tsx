@@ -2,7 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { useBoard } from "../../hooks";
 import "./style.css";
 
-export const Board = () => {
+export const Board = ({
+  height,
+  width,
+  containerClassName,
+  canvasClassName,
+}: {
+  height?: number;
+  width?: number;
+  containerClassName?: string;
+  canvasClassName?: string;
+}) => {
   const { board } = useBoard();
   const [registered, setIsRegistered] = useState(false);
   const ref = useRef<HTMLCanvasElement | null>(null);
@@ -19,12 +29,12 @@ export const Board = () => {
   }, [registered]);
 
   return (
-    <div className="Board-Container">
+    <div className={containerClassName ?? "Board-Container"}>
       <canvas
-        height={600}
-        width={600}
+        height={height ?? 600}
+        width={width ?? 600}
         ref={ref}
-        className="Board-Container-Canvas"
+        className={canvasClassName ?? "Board-Container-Canvas"}
       ></canvas>
     </div>
   );

@@ -9,6 +9,7 @@ export interface IBoard {
 }
 
 export enum BoardSizeLabel {
+  TwoByTwo = "2x2",
   FourByFour = "4x4",
   FiveByFive = "5x5",
   SixBySix = "6x6",

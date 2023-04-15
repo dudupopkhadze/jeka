@@ -16,19 +16,24 @@ const startingConfig = BoardConfigs.find(
   ({ label }) => label === StartingBoardLabel
 )!;
 
-export const BoardContextProvider = ({
-  children,
-}: {
+export const BoardContextProvider = (props: {
   children: React.ReactElement;
+  startingConfig?: BoardConfig;
+  height?: number;
+  width?: number;
 }) => {
   const boardRef = useRef(
-    new Board({
-      rows: startingConfig.rows,
-      columns: startingConfig.columns,
-      label: startingConfig.label,
-      // boneLocations: startingConfig.boneLocations,
-      // obstacles: startingConfig.obstacles,
-    })
+    new Board(
+      {
+        rows: (props.startingConfig ?? startingConfig).rows,
+        columns: (props.startingConfig ?? startingConfig).columns,
+        label: (props.startingConfig ?? startingConfig).label,
+        boneLocations: props.startingConfig?.boneLocations,
+        // obstacles: startingConfig.obstacles,
+      },
+      props.width,
+      props.height
+    )
   );
   const [boardSize, setBoardSize] =
     useState<BoardSizeLabel>(StartingBoardLabel);
@@ -46,7 +51,7 @@ export const BoardContextProvider = ({
         updateBoardConfig,
       }}
     >
-      {children}
+      {props.children}
     </BoardControllerContext.Provider>
   );
 };
