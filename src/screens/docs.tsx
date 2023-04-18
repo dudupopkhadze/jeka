@@ -108,6 +108,18 @@ const docs = [
       boneLocations: [{ row: 1, column: 1, count: 3 }],
     } as unknown as BoardConfig,
   },
+
+  {
+    command: "Defining a function",
+    code: `//jeka runs \nfun moveForwardAndTurn(){\n  while(frontIsClear()){\n     moveForward();\n  }\n  turnLeft();\n}\n  \nmoveForwardAndTurn();\nmoveForwardAndTurn();\nmoveForwardAndTurn();\nmoveForwardAndTurn();`,
+    description: "",
+    instructions: [],
+    input:
+      "fun moveForwardAndTurn(){\n  while(frontIsClear()){\n     moveForward();\n  }\n  turnLeft();\n}\n  \nmoveForwardAndTurn();\nmoveForwardAndTurn();\nmoveForwardAndTurn();\nmoveForwardAndTurn();",
+    boardConfig: BoardConfigs.find(
+      ({ label }) => label === BoardSizeLabel.TwoByTwo
+    )!,
+  },
 ];
 
 export default function Docs() {
