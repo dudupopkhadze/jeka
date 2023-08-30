@@ -4,7 +4,7 @@ import "./style.css";
 
 export const Configuration = () => {
   return (
-    <div className="Configuration">
+    <div className={"Configuration"}>
       <DelaySlider />
       <BoardSizeSelector />
     </div>
