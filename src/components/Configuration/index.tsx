@@ -1,6 +1,6 @@
 import { BoardSizeSelector } from "../BoardSizeSelector";
 import { DelaySlider } from "../DelaySlider";
-import "./style.css";
+import "./style.less";
 
 export const Configuration = () => {
   return (

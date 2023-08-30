@@ -1,4 +1,4 @@
-import "./CodeInput.css";
+import "./CodeInput.less";
 import { useCodeController } from "../../hooks";
 
 export const CodeInput = () => {
