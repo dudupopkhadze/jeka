@@ -1,5 +1,5 @@
 import { RouterProvider, createHashRouter } from "react-router-dom";
-import "./styles/App.css";
+import "./styles/App.less";
 import Root from "./screens/root";
 import Docs from "./screens/docs";
 

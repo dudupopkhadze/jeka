@@ -1,5 +1,5 @@
 import React from "react";
-import "./style.css";
+import "./style.less";
 import { ReactComponent as PlaySVG } from "../../svgs/play.svg";
 import { useCodeController } from "../../hooks";
 import { JekaInstruction } from "../../types";

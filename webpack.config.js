@@ -31,6 +31,14 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
+        test: /\.less$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "less-loader", // compiles LESS to CSS
+        ],
+      },
+      {
         test: /\.svg$/,
         use: ["@svgr/webpack", "url-loader"],
       },

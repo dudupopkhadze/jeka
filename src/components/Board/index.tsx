@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useBoard } from "../../hooks";
-import "./style.css";
+import "./style.less";
 
 export const Board = ({
   height,

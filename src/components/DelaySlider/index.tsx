@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Delay } from "../../config";
 import { useEngine } from "../../hooks";
-import "./style.css";
+import "./style.less";
 
 export const DelaySlider = () => {
   const { setEngineProcessingDelay } = useEngine();

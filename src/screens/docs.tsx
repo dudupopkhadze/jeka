@@ -2,7 +2,7 @@ import React from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 import { ReactComponent as PlaySVG } from "../svgs/play.svg";
 import { ReactComponent as ArrowSVG } from "../svgs/arrow.svg";
-import "../styles/Docs.css";
+import "../styles/Docs.less";
 import {
   CodeControllerContextProvider,
   BoardContextProvider,

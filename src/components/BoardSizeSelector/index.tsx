@@ -3,7 +3,7 @@ import Select from "react-select";
 import { BoardConfigs } from "../../config";
 import { useBoard, useEngine } from "../../hooks";
 import { BoardSizeLabel } from "../../types";
-import "./style.css";
+import "./style.less";
 
 export const BoardSizeSelector = () => {
   const { resetEngineState } = useEngine();
